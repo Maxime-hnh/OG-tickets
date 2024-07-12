@@ -1,7 +1,6 @@
 package com.studi.OG_tickets.services;
 
 import com.studi.OG_tickets.dto.ProductDto;
-import com.studi.OG_tickets.exceptions.InternalServerException;
 import com.studi.OG_tickets.exceptions.NotFoundException;
 import com.studi.OG_tickets.mappers.ProductMapper;
 import com.studi.OG_tickets.models.Product;
@@ -52,14 +51,19 @@ public class ProductService {
 
   @Async
   public CompletableFuture<ProductDto> updateProduct(Long id, ProductDto productDto) {
-    return CompletableFuture.supplyAsync(() -> productRepository.findById(id)
-            .map(p -> {
-              p.setName(productDto.getName());
-              p.setDescription(productDto.getDescription());
-              p.setPrice(productDto.getPrice());
-              productRepository.save(p);
-              return ProductMapper.toDto(p);
-            }).orElseThrow(() -> new NotFoundException("Product with id " + id + " not found"))
+    return CompletableFuture.supplyAsync(() -> {
+              Product product = productRepository.findById(id)
+                      .orElseThrow(() -> new NotFoundException("No product found with id: " + id));
+              product.setName(productDto.getName());
+              product.setDescription(productDto.getDescription());
+              product.setPrice(productDto.getPrice());
+              product.setCategory(productDto.getCategory());
+              product.setActive(productDto.isActive());
+              product.setStock(productDto.getStock());
+
+              Product updatedProduct = productRepository.save(product);
+              return ProductMapper.toDto(updatedProduct);
+            }
     );
   }
 

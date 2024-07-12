@@ -43,6 +43,6 @@ public class ProductController {
   @DeleteMapping("/{id}")
   public CompletableFuture<ResponseEntity<Void>> deleteProduct(@PathVariable Long id) {
     return productService.deleteProduct(id)
-            .thenApply(aVoid -> ResponseEntity.ok().<Void>build());
+            .thenApply(ResponseEntity::ok);
   }
 }
