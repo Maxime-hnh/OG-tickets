@@ -27,7 +27,7 @@ public class User {
   @Column(nullable = false, length = 50)
   private String lastName;
 
-  @Column(nullable = false, unique = true, length = 255)
+  @Column(nullable = false, unique = true)
   private String email;
 
   @Column(nullable = false)
@@ -44,4 +44,4 @@ public class User {
           inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
   private List<Role> roles = new ArrayList<>();
 
-};
+}
