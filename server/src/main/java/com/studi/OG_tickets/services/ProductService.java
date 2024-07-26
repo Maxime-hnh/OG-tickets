@@ -5,12 +5,11 @@ import com.studi.OG_tickets.exceptions.NotFoundException;
 import com.studi.OG_tickets.mappers.ProductMapper;
 import com.studi.OG_tickets.models.Product;
 import com.studi.OG_tickets.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,62 +18,50 @@ public class ProductService {
 
   private ProductRepository productRepository;
 
-  @Async
-  public CompletableFuture<ProductDto> createProduct(ProductDto productDto) {
-    return CompletableFuture.supplyAsync(() -> {
+  @Transactional
+  public ProductDto createProduct(ProductDto productDto) {
       Product product = ProductMapper.toEntity(productDto);
       Product newProduct = productRepository.save(product);
       return ProductMapper.toDto(newProduct);
-    });
   }
 
-  @Async
-  public CompletableFuture<ProductDto> getById(Long id) {
-    return CompletableFuture.supplyAsync(() -> {
-      Product product = productRepository.findById(id)
-              .orElseThrow(() -> new NotFoundException("No product found with id: " + id));
-      return ProductMapper.toDto(product);
-    });
+  @Transactional
+  public ProductDto updateProduct(Long id, ProductDto productDto) {
+    Product product = productRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
+
+    product.setName(productDto.getName());
+    product.setDescription(productDto.getDescription());
+    product.setPrice(productDto.getPrice());
+    product.setCategory(productDto.getCategory());
+    product.setActive(productDto.isActive());
+    product.setStock(productDto.getStock());
+
+    Product updatedProduct = productRepository.save(product);
+    return ProductMapper.toDto(updatedProduct);
+
   }
 
-  @Async
-  public CompletableFuture<List<ProductDto>> getAllProducts() {
-    return CompletableFuture.supplyAsync(() -> {
-      List<Product> products = productRepository.findAll();
-      if (products.isEmpty()) {
-        throw new NotFoundException("No products found");
-      } else {
-        return products.stream().map(ProductMapper::toDto).collect(Collectors.toList());
-      }
-    });
+  @Transactional
+  public void deleteProduct(Long id) {
+    if (!productRepository.existsById(id)) {
+      throw new NotFoundException("Product not found with id: " + id);
+    }
+    productRepository.deleteById(id);
   }
 
-  @Async
-  public CompletableFuture<ProductDto> updateProduct(Long id, ProductDto productDto) {
-    return CompletableFuture.supplyAsync(() -> {
-              Product product = productRepository.findById(id)
-                      .orElseThrow(() -> new NotFoundException("No product found with id: " + id));
-              product.setName(productDto.getName());
-              product.setDescription(productDto.getDescription());
-              product.setPrice(productDto.getPrice());
-              product.setCategory(productDto.getCategory());
-              product.setActive(productDto.isActive());
-              product.setStock(productDto.getStock());
-
-              Product updatedProduct = productRepository.save(product);
-              return ProductMapper.toDto(updatedProduct);
-            }
-    );
+  public ProductDto getById(Long id) {
+    Product product = productRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
+    return ProductMapper.toDto(product);
   }
 
-  @Async
-  public CompletableFuture<Void> deleteProduct(Long id) {
-    return CompletableFuture.runAsync(() -> {
-      if (productRepository.existsById(id)) {
-        productRepository.deleteById(id);
-      } else {
-        throw new NotFoundException("Product with id " + id + " not found");
-      }
-    });
+  public List<ProductDto> getAllProducts() {
+    List<Product> products = productRepository.findAll();
+    if (products.isEmpty()) {
+      throw new NotFoundException("No products found");
+    }
+    return products.stream().map(ProductMapper::toDto).collect(Collectors.toList());
   }
+
 }

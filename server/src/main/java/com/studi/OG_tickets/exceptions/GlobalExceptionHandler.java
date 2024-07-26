@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     errorObject.setMessage(ex.getMessage());
     errorObject.setTimestamp(new Date());
 
-    return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(InternalServerException.class)
@@ -29,6 +29,27 @@ public class GlobalExceptionHandler {
     errorObject.setMessage(ex.getMessage());
     errorObject.setTimestamp(new Date());
 
-    return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<ErrorObject> handleBadRequestException(BadRequestException ex, WebRequest request) {
+    ErrorObject errorObject = new ErrorObject();
+    errorObject.setErrorCode(HttpStatus.BAD_REQUEST.value());
+    errorObject.setMessage(ex.getMessage());
+    errorObject.setTimestamp(new Date());
+
+    return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ErrorObject> handleGeneralException(Exception ex, WebRequest request) {
+    ErrorObject errorObject = new ErrorObject();
+    errorObject.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    errorObject.setMessage("An unexpected error occurred: " + ex.getMessage());
+    errorObject.setTimestamp(new Date());
+
+    return new ResponseEntity<>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
 }

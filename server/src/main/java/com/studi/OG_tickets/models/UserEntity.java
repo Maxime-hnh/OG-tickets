@@ -15,17 +15,20 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class User {
+public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, length = 50)
+  @Column(length = 50)
   private String firstName;
 
-  @Column(nullable = false, length = 50)
+  @Column(length = 50)
   private String lastName;
+
+  @Column(length= 100)
+  private String userName = firstName + " " + lastName;
 
   @Column(nullable = false, unique = true)
   private String email;
@@ -33,10 +36,7 @@ public class User {
   @Column(nullable = false)
   private String password;
 
-  @Column(nullable = false)
-  private String role = "user";
-
-  @Column(nullable = false)
+  @Column()
   private UUID key;
 
   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
