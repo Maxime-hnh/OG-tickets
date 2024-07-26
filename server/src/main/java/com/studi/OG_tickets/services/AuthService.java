@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -31,6 +32,7 @@ public class AuthService {
       user.setUserName(registerDto.getFirstName() + " " + registerDto.getLastName());
       user.setEmail(registerDto.getEmail());
       user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+      user.setKey(UUID.randomUUID().toString());
 
       Role roles = roleService.getByName("USER");
       user.setRoles(Collections.singletonList(roles));
