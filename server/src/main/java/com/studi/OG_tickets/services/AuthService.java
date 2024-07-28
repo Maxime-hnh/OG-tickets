@@ -1,12 +1,21 @@
 package com.studi.OG_tickets.services;
 
+import com.studi.OG_tickets.dto.AuthResponseDto;
+import com.studi.OG_tickets.dto.LoginDto;
 import com.studi.OG_tickets.dto.RegisterDto;
 import com.studi.OG_tickets.exceptions.BadRequestException;
 import com.studi.OG_tickets.models.Role;
 import com.studi.OG_tickets.models.UserEntity;
 import com.studi.OG_tickets.repository.UserRepository;
+import com.studi.OG_tickets.security.JWTGenerator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +30,9 @@ public class AuthService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final UserService userService;
+  private final AuthenticationManager authenticationManager;
+  private JWTGenerator jwtGenerator;
+
 
   @Transactional
   public String register(RegisterDto registerDto) {
@@ -42,5 +54,17 @@ public class AuthService {
     } else {
       throw new BadRequestException("User already exists with email: " + registerDto.getEmail());
     }
+  }
+
+  @Transactional
+  public AuthResponseDto login(LoginDto loginDto) {
+    Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                    loginDto.getEmail(), loginDto.getPassword()
+            )
+    );
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    String token = jwtGenerator.generateToken(authentication);
+    return new AuthResponseDto(token);
   }
 }
