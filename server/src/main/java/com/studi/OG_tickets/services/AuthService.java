@@ -1,17 +1,14 @@
 package com.studi.OG_tickets.services;
 
-import com.studi.OG_tickets.dto.AuthResponseDto;
-import com.studi.OG_tickets.dto.LoginDto;
-import com.studi.OG_tickets.dto.RegisterDto;
+import com.studi.OG_tickets.dto.*;
 import com.studi.OG_tickets.exceptions.BadRequestException;
 import com.studi.OG_tickets.models.Role;
 import com.studi.OG_tickets.models.UserEntity;
 import com.studi.OG_tickets.repository.UserRepository;
+import com.studi.OG_tickets.security.CustomUserDetailsService;
 import com.studi.OG_tickets.security.JWTGenerator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,12 +38,11 @@ public class AuthService {
       UserEntity user = new UserEntity();
       user.setFirstName(registerDto.getFirstName());
       user.setLastName(registerDto.getLastName());
-      user.setUserName(registerDto.getFirstName() + " " + registerDto.getLastName());
       user.setEmail(registerDto.getEmail());
       user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-      user.setKey(UUID.randomUUID().toString());
+      user.setKey(UUID.randomUUID());
 
-      Role roles = roleService.getByName("USER");
+      Role roles = roleService.getByName(Role.RoleName.USER);
       user.setRoles(Collections.singletonList(roles));
 
       userRepository.save(user);
@@ -65,6 +61,17 @@ public class AuthService {
     );
     SecurityContextHolder.getContext().setAuthentication(authentication);
     String token = jwtGenerator.generateToken(authentication);
-    return new AuthResponseDto(token);
+
+    UserWithRoleDto loggedUser = userService.getByEmail(loginDto.getEmail());
+
+
+    return new AuthResponseDto(
+            token,
+            loggedUser.getId(),
+            loggedUser.getEmail(),
+            loggedUser.getFirstName(),
+            loggedUser.getLastName(),
+            loggedUser.getRoles()
+    );
   }
 }

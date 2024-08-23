@@ -38,7 +38,7 @@ public class JWTGenerator {
             .verifyWith(SecurityConstants.JWT_SECRET)
             .build()
             .parseSignedClaims(token);
-    return claims.getPayload().getSubject().equals("email") ? claims.getPayload().getSubject() : null;
+    return claims.getPayload().getSubject();
     } catch (JwtException | IllegalArgumentException e) {
       return e.getMessage();
     }

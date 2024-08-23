@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,9 +21,11 @@ public class ProductService {
 
   @Transactional
   public ProductDto createProduct(ProductDto productDto) {
-      Product product = ProductMapper.toEntity(productDto);
-      Product newProduct = productRepository.save(product);
-      return ProductMapper.toDto(newProduct);
+    Product product = ProductMapper.toEntity(productDto);
+    product.setCur(UUID.randomUUID());
+
+    Product newProduct = productRepository.save(product);
+    return ProductMapper.toDto(newProduct);
   }
 
   @Transactional

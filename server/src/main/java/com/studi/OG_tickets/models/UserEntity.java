@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -20,14 +22,14 @@ public class UserEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(length = 50)
+  @Column(nullable = false, unique = true)
+  private UUID key;
+
+  @Column(length = 50, nullable = false)
   private String firstName;
 
-  @Column(length = 50)
+  @Column(length = 50, nullable = false)
   private String lastName;
-
-  @Column(length= 100)
-  private String userName = firstName + " " + lastName;
 
   @Column(nullable = false, unique = true)
   private String email;
@@ -35,8 +37,21 @@ public class UserEntity {
   @Column(nullable = false)
   private String password;
 
-  @Column()
-  private String key;
+  @Column(nullable = false, updatable = false)
+  private LocalDateTime createdAt;
+
+  @Column(nullable = false, updatable = false)
+  private LocalDateTime updatedAt;
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
+    this.updatedAt = LocalDateTime.now();
+  }
+  @PreUpdate
+  protected void onUpdate() {
+    this.updatedAt = LocalDateTime.now();
+  }
 
   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,7 +26,6 @@ public class SecurityConfig {
   private JWTGenerator tokenGenerator;
 
   @Bean
-//  @Order(1)
   public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
     http
             .csrf(AbstractHttpConfigurer::disable)
@@ -35,6 +35,9 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .securityMatcher("/**")
             .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers(HttpMethod.POST, "/api/product/").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.PUT,"/api/product/{id}").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/product/{id}").hasAuthority("ADMIN")
                     .anyRequest().permitAll()
             );
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

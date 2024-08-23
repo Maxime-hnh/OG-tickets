@@ -6,15 +6,13 @@ import com.studi.OG_tickets.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @AllArgsConstructor
 public class RoleService {
 
   private RoleRepository roleRepository;
 
-  public Role getByName(String name) {
+  public Role getByName(Role.RoleName name) {
     return roleRepository.findByName(name)
             .orElseThrow(() -> new NotFoundException("Role not found"));
   }
