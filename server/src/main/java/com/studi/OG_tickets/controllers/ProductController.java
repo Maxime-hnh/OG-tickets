@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/product/")
+@RequestMapping("/api/product")
 @AllArgsConstructor
 public class ProductController {
 
@@ -57,7 +57,7 @@ public class ProductController {
     }
   }
 
-  @GetMapping("all")
+  @GetMapping("/all")
   public ResponseEntity<List<ProductDto>> getAllProducts() {
     try {
       List<ProductDto> productDto = productService.getAllProducts();

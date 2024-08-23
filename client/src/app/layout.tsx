@@ -6,7 +6,6 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import "@mantine/notifications/styles.css";
 import {
-  AppShellFooter,
   AppShellHeader,
   AppShellMain,
   AppShellNavbar, AppShellSection, Button,
@@ -17,12 +16,13 @@ import {
 import {AppShell, Burger, Group, Image, UnstyledButton} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import classes from './ui/home.module.scss';
-import React from "react";
+import React, {useEffect, useState } from "react";
 import Link from "next/link";
+import useWindowSize from "@/_components/Utils/useWindowSize";
+import {MOBILE_SIZE} from "@/_helpers/constants";
+import AppContext from "./Context/AppContext";
 
 const inter = Inter({subsets: ["latin"]});
-
-
 const themeMantine = createTheme({
   autoContrast: true
 });
@@ -30,6 +30,15 @@ const themeMantine = createTheme({
 export default function RootLayout({children}: Readonly<{ children: React.ReactNode; }>) {
 
   const [opened, {toggle}] = useDisclosure();
+  const { width } = useWindowSize();
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isMobile = window.innerWidth <= MOBILE_SIZE;
+    setIsMobile(isMobile);
+    const vh = window.innerHeight * 0.01;
+    if (isMobile) document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }, [width]);
 
   return (
     <html lang="fr">
@@ -39,6 +48,9 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
     </head>
     <body className={inter.className}>
     <MantineProvider theme={themeMantine}>
+      <AppContext.Provider value={{
+        isMobile
+      }}>
       <AppShell
         header={{height: 60}}
         navbar={{width: 300, breakpoint: 'sm', collapsed: {desktop: true, mobile: !opened}}}
@@ -76,10 +88,11 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
         <AppShellMain bg={"#11191f"}>
           {children}
         </AppShellMain>
-        <AppShellSection>
+        <AppShellSection bg={"#fff"}>
           <Text>footer</Text>
         </AppShellSection>
       </AppShell>
+      </AppContext.Provider>
     </MantineProvider>
     </body>
     </html>

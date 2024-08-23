@@ -1,27 +1,54 @@
 "use client"
 import {Button, Container, Flex, Image, Paper, Text, Title} from "@mantine/core";
 import CarouselEvent from "../_components/CarouselEvent";
+import {useContext, useEffect, useState} from "react";
+import AppContext from "@/app/Context/AppContext";
+import useWindowSize from "@/_components/Utils/useWindowSize";
+import {TABLET_SIZE} from "@/_helpers/constants";
+import {productService} from "@/_services/product.service";
 
 export default function Home() {
 
+  const [test, setTest] = useState();
+  const {isMobile} = useContext(AppContext);
+  const {width} = useWindowSize();
+  const isTablet = width <= TABLET_SIZE;
+
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const data = await productService.getProducts();
+      console.log(data)
+      if(data) setTest(data);
+    };
+    getProducts()
+  }, []);
+
   return (
-    <Container mx={30} maw={"100%"}>
+    <Container mx={isTablet ? 0 : 30} maw={"100%"} px={0}>
       <Container m={0} p={0} maw={"100%"}>
         <Flex direction={"column"}>
           <Title order={1}>Bienvenue aux Jeux Olympique de Paris 2024</Title>
           <Text c={"gray"} fz={18}>Découvrez les moments forts et les épreuves de cette édition</Text>
         </Flex>
-        <Flex direction={"row"} mt={10}>
+        <Flex direction={isTablet ? "column" : "row"} mt={10}>
           <Image
             radius={"xs"}
             src={"/home_stadium.png"}
             alt={"Stade olympique"}
-            w={600}
+            w={isTablet ? "100%" : 600}
             fit={"contain"}
-            mr={10}
+            mr={isTablet ? 0 : 10}
+            mb={isTablet ? 10 : 0}
           />
           <Flex direction={"column"} justify={"space-between"}>
-            <Text ta={"justify"} c={"#bbc6ce"} fz={22}>Des compétitions palpitantes dans des disciplines variées, allant
+            <Text
+              ta={"justify"}
+              c={"#bbc6ce"}
+              fz={22}
+              mb={isTablet ? 10 : 0}
+            >
+              Des compétitions palpitantes dans des disciplines variées, allant
               de l'athlétisme à la natation en passant par la gymnastique, se dérouleront dans des sites emblématiques
               de
               Paris, offrant aux spectateurs des moments inoubliables. Ne manquez pas cette opportunité unique de vivre
@@ -45,7 +72,7 @@ export default function Home() {
 
         </Flex>
       </Container>
-     <CarouselEvent/>
+      <CarouselEvent/>
 
 
     </Container>
