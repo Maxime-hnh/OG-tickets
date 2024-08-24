@@ -1,7 +1,6 @@
 package com.studi.OG_tickets.security;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -35,6 +34,7 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .securityMatcher("/**")
             .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers( "/api/v1/login", "/api/v1/refreshToken").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/product/").hasAuthority("ADMIN")
                     .requestMatchers(HttpMethod.PUT,"/api/product/{id}").hasAuthority("ADMIN")
                     .requestMatchers(HttpMethod.DELETE,"/api/product/{id}").hasAuthority("ADMIN")

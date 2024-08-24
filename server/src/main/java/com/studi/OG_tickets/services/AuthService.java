@@ -2,10 +2,11 @@ package com.studi.OG_tickets.services;
 
 import com.studi.OG_tickets.dto.*;
 import com.studi.OG_tickets.exceptions.BadRequestException;
+import com.studi.OG_tickets.exceptions.NotFoundException;
+import com.studi.OG_tickets.models.RefreshToken;
 import com.studi.OG_tickets.models.Role;
 import com.studi.OG_tickets.models.UserEntity;
 import com.studi.OG_tickets.repository.UserRepository;
-import com.studi.OG_tickets.security.CustomUserDetailsService;
 import com.studi.OG_tickets.security.JWTGenerator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +30,8 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final UserService userService;
   private final AuthenticationManager authenticationManager;
-  private JWTGenerator jwtGenerator;
-
+  private final JWTGenerator jwtGenerator;
+  private final RefreshTokenService refreshTokenService;
 
   @Transactional
   public String register(RegisterDto registerDto) {
@@ -60,18 +62,40 @@ public class AuthService {
             )
     );
     SecurityContextHolder.getContext().setAuthentication(authentication);
-    String token = jwtGenerator.generateToken(authentication);
+    String token = jwtGenerator.generateToken(authentication.getName()); //email
 
     UserWithRoleDto loggedUser = userService.getByEmail(loginDto.getEmail());
-
+    RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginDto.getEmail());
 
     return new AuthResponseDto(
             token,
+            refreshToken.getToken(),
             loggedUser.getId(),
             loggedUser.getEmail(),
             loggedUser.getFirstName(),
             loggedUser.getLastName(),
             loggedUser.getRoles()
     );
+  }
+
+  @Transactional
+  public AuthResponseDto refreshAccessToken(String refreshToken) {
+    return refreshTokenService.findByToken(refreshToken)
+            .map(refreshTokenService::verifyExpiration)
+            .map(RefreshToken::getUserInfo)
+            .map(user -> {
+              String token = jwtGenerator.generateToken(user.getEmail());
+
+              return new AuthResponseDto(
+                      token,
+                      refreshToken,
+                      user.getId(),
+                      user.getEmail(),
+                      user.getFirstName(),
+                      user.getLastName(),
+                      user.getRoles().stream().map(Role::getName).collect(Collectors.toList())
+              );
+            })
+            .orElseThrow(() -> new NotFoundException( refreshToken + ": Refresh token is not in database!"));
   }
 }
