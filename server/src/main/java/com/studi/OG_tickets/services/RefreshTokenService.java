@@ -1,6 +1,7 @@
 package com.studi.OG_tickets.services;
 
 import com.studi.OG_tickets.models.RefreshToken;
+import com.studi.OG_tickets.models.UserEntity;
 import com.studi.OG_tickets.repository.RefreshTokenRepository;
 import com.studi.OG_tickets.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -31,12 +32,24 @@ public class RefreshTokenService {
     return refreshTokenRepository.findByToken(token);
   }
 
-  public RefreshToken verifyExpiration(RefreshToken token) {
-    if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
-      refreshTokenRepository.delete(token);
-      throw new RuntimeException(token.getToken() + " Refresh token is expired, please make a new login.");
+  public Optional<RefreshToken> findByUserEmail(String email) {
+    Optional<UserEntity> userOptional = userRepository.findByEmail(email);
+    return userOptional.flatMap(refreshTokenRepository::findByUserInfo);
+  }
+
+  public void cleanUpExpiredToken(RefreshToken refreshToken) {
+    refreshTokenRepository.delete(refreshToken);
+  }
+
+  public Boolean isTokenExpired(RefreshToken refreshToken) {
+    return refreshToken.getExpiryDate().isBefore(Instant.now());
+  }
+  public RefreshToken verifyExpiration(RefreshToken refreshToken) {
+    if (this.isTokenExpired(refreshToken)) {
+      this.cleanUpExpiredToken(refreshToken);
+      throw new RuntimeException(refreshToken.getToken() + " Refresh token is expired, please make a new login.");
     }
-    return token;
+    return refreshToken;
   }
 
   private Instant calculateExpiryDate() {

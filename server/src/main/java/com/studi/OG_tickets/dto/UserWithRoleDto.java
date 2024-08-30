@@ -15,5 +15,5 @@ public class UserWithRoleDto {
   private String lastName;
   private String email;
   private String password;
-  private List<Role.RoleName> roles;
+  private Role.RoleName role;
 }

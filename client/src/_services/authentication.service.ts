@@ -1,17 +1,25 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {handleResponse} from "@/_helpers/handle-response";
 import {FetchedUser} from "@/_objects/User";
 import {authHeader} from "@/_helpers/auth-header";
 
 export enum AuthRole {
-  USER = 'user',
-  ADMIN = 'admin',
-  CLIENT = 'client',
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+  CLIENT = 'CLIENT',
+}
+
+export class AuthenticationRequest {
+  email = "";
+  password = "";
 }
 
 export interface AuthenticatedUser {
   token: string;
-  fullname: string;
+  refreshToken: string;
+  id: number;
+  firstName: string;
+  lastName: string;
   role: AuthRole;
 }
 
@@ -24,76 +32,68 @@ class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  login(email: string, password: string): Promise<AuthenticatedUser> {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    };
-
-    return fetch('/api/auth/token', requestOptions)
-      .then(handleResponse)
-      .then((user) => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
-        return user as AuthenticatedUser;
-      });
-  }
-
-  validateToken(key: string):Promise<AuthenticatedUser> {
-    const requestOptions = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    };
-    return fetch(`/api/user/checkLocalCouncilKey?key=${key}`, requestOptions)
-      .then(handleResponse)
-      .then((user) => {
-        localStorage.setItem('currentUser', JSON.stringify(user))
-        this.currentUserSubject.next(user);
-        return user
-      })
-  }
-
-  signup(body: any) {
+  async signup(body: any) {
     const requestOptions = {
       method: 'POST',
       headers: authHeader(),
       body: JSON.stringify(body),
     };
-
-    return fetch('/api/auth/signup', requestOptions)
-      .then(handleResponse)
-      .then((user) => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
-        return user;
-      });
+    const response = await fetch('/api/auth/signup', requestOptions);
+    const user = await handleResponse(response)
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+    return user;
   }
 
-  isLogged() {
-    if(!localStorage.getItem('currentUser')) {
-      return false;
-    } else {
-      return true;
-    }
+  async login(values: AuthenticationRequest): Promise<AuthenticatedUser | void> {
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        ...authHeader()
+      },
+      body: JSON.stringify(values),
+    };
+    const response = await fetch('/api/auth/login', requestOptions);
+    const user = await handleResponse(response);
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+    return user;
+  }
+
+  async refreshToken(refreshToken: string): Promise<AuthenticatedUser | void> {
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        ...authHeader()
+      },
+      body: JSON.stringify(refreshToken),
+    };
+    const response = await fetch('api/auth/refreshToken', requestOptions);
+    const user = await handleResponse(response);
+    localStorage.setItem('CurrentUser', JSON.stringify((user)));
+    this.currentUserSubject.next(user);
+    return user;
+  }
+
+  isLogged():boolean {
+    const currentUser = localStorage.getItem('currentUser');
+    return currentUser !== null;
   }
 
   hasRole(role: AuthRole): boolean {
-    return this.isLogged() && this.getRole() == role;
+    return this.getRole() === role;
   }
 
   getRole(): AuthRole {
     if (this.isLogged()) {
-      if(this.currentUserValue)
+      if (this.currentUserValue)
         return this.currentUserValue.role;
       return AuthRole.USER;
     }
     return AuthRole.USER;
   }
 
-  me(): Promise<FetchedUser| null> {
+  async me(): Promise<FetchedUser | null> {
     const requestOptions = {
       method: 'GET',
       headers: authHeader(),
@@ -106,9 +106,7 @@ class AuthenticationService {
       });
   }
 
-
   logout(): void {
-    // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
   }

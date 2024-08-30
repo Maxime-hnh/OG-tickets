@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class AuthService {
   @Transactional
   public String register(RegisterDto registerDto) {
     boolean exists = userService.userEntityExistByEmail(registerDto.getEmail());
-    if(!exists) {
+    if (!exists) {
       UserEntity user = new UserEntity();
       user.setFirstName(registerDto.getFirstName());
       user.setLastName(registerDto.getLastName());
@@ -65,16 +66,22 @@ public class AuthService {
     String token = jwtGenerator.generateToken(authentication.getName()); //email
 
     UserWithRoleDto loggedUser = userService.getByEmail(loginDto.getEmail());
-    RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginDto.getEmail());
-
+    Optional<RefreshToken> existingRefreshToken  = refreshTokenService.findByUserEmail(loggedUser.getEmail());
+    RefreshToken refreshTokenResponse;
+    if (existingRefreshToken.isEmpty() || refreshTokenService.isTokenExpired(existingRefreshToken.get())) {
+      existingRefreshToken.ifPresent(refreshTokenService::cleanUpExpiredToken);
+      refreshTokenResponse = refreshTokenService.createRefreshToken(loginDto.getEmail());
+    } else {
+      refreshTokenResponse = existingRefreshToken.get();
+    }
     return new AuthResponseDto(
             token,
-            refreshToken.getToken(),
+            refreshTokenResponse.getToken(),
             loggedUser.getId(),
             loggedUser.getEmail(),
             loggedUser.getFirstName(),
             loggedUser.getLastName(),
-            loggedUser.getRoles()
+            loggedUser.getRole()
     );
   }
 
@@ -85,7 +92,6 @@ public class AuthService {
             .map(RefreshToken::getUserInfo)
             .map(user -> {
               String token = jwtGenerator.generateToken(user.getEmail());
-
               return new AuthResponseDto(
                       token,
                       refreshToken,
@@ -93,9 +99,9 @@ public class AuthService {
                       user.getEmail(),
                       user.getFirstName(),
                       user.getLastName(),
-                      user.getRoles().stream().map(Role::getName).collect(Collectors.toList())
+                      user.getRoles().get(0).getName()
               );
             })
-            .orElseThrow(() -> new NotFoundException( refreshToken + ": Refresh token is not in database!"));
+            .orElseThrow(() -> new NotFoundException(refreshToken + ": Refresh token is not in database!"));
   }
 }

@@ -27,7 +27,7 @@ export function authHeader(type: 'json' | 'form' | 'text' = "json"): HeadersInit
   }
 
   if (currentUser && currentUser.token) {
-    header["x-access-token"] = currentUser.token;
+    header["Authorization"] = "Bearer " + currentUser.token;
   }
 
   return header;

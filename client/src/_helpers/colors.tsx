@@ -7,5 +7,6 @@ export const colors = {
   og_green_2 : '#00A651',
   og_red: '#BF192B',
   og_red_2 : '#980F30',
-  og_red_30 : '#bf192b57'
+  og_red_30 : '#bf192b57',
+  white : "#fff",
 }

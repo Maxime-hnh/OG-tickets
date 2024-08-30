@@ -14,9 +14,9 @@ public class AuthResponseDto {
   private String email;
   private String firstName;
   private String lastName;
-  private List<Role.RoleName> role;
+  private Role.RoleName role;
 
-  public AuthResponseDto(String accessToken, String refreshToken, Long id, String email, String firstName, String lastName, List<Role.RoleName> role) {
+  public AuthResponseDto(String accessToken, String refreshToken, Long id, String email, String firstName, String lastName, Role.RoleName role) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.id = id;

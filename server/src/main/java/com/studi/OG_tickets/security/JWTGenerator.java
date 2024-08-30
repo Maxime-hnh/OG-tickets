@@ -18,7 +18,7 @@ public class JWTGenerator {
     Date currentDate = new Date();
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(currentDate);
-    calendar.add(Calendar.MINUTE, 15);
+    calendar.add(Calendar.HOUR, 24);
 
     Date expireDate = calendar.getTime();
 

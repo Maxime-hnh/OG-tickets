@@ -39,8 +39,8 @@ public class UserMapper {
     userWithRoleDto.setFirstName(userEntity.getFirstName());
     userWithRoleDto.setLastName(userEntity.getLastName());
     userWithRoleDto.setEmail(userEntity.getEmail());
-    List<Role.RoleName> roles = userEntity.getRoles().stream().map(Role::getName).collect(Collectors.toList());
-    userWithRoleDto.setRoles(roles);
+    Role.RoleName role = userEntity.getRoles().get(0).getName();
+    userWithRoleDto.setRole(role);
     return userWithRoleDto;
   }
 }
