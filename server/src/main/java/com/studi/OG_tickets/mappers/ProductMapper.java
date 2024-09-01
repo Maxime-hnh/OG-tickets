@@ -14,8 +14,12 @@ public class ProductMapper {
     productDto.setImage(product.getImage());
     productDto.setPrice(product.getPrice());
     productDto.setStock(product.getStock());
-    productDto.setActive(product.isActive());
-    productDto.setStatus(product.getStatus());
+    productDto.setCity(product.getCity());
+    productDto.setStage(product.getStage());
+    productDto.setVisible(product.getVisible());
+    productDto.setDate(product.getDate());
+    productDto.setStartTime(productDto.getStartTime());
+    productDto.setEndTime(productDto.getEndTime());
     productDto.setCategory(product.getCategory());
     return productDto;
   }
@@ -29,8 +33,12 @@ public class ProductMapper {
     product.setImage(productDto.getImage());
     product.setPrice(productDto.getPrice());
     product.setStock(productDto.getStock());
-    product.setActive(productDto.isActive());
-    product.setStatus(productDto.getStatus());
+    product.setCity(productDto.getCity());
+    product.setStage(productDto.getStage());
+    product.setVisible(productDto.getVisible());
+    product.setDate(productDto.getDate());
+    product.setStartTime(productDto.getStartTime());
+    product.setEndTime(productDto.getEndTime());
     product.setCategory(productDto.getCategory());
     return product;
   }

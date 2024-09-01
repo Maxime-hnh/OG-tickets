@@ -33,13 +33,7 @@ public class ProductService {
     Product product = productRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
 
-    product.setName(productDto.getName());
-    product.setDescription(productDto.getDescription());
-    product.setPrice(productDto.getPrice());
-    product.setCategory(productDto.getCategory());
-    product.setActive(productDto.isActive());
-    product.setStock(productDto.getStock());
-
+    product.updateFromDto(productDto);
     Product updatedProduct = productRepository.save(product);
     return ProductMapper.toDto(updatedProduct);
 

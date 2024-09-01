@@ -15,7 +15,7 @@ export class AuthenticationRequest {
 }
 
 export interface AuthenticatedUser {
-  token: string;
+  accessToken: string;
   refreshToken: string;
   id: number;
   firstName: string;

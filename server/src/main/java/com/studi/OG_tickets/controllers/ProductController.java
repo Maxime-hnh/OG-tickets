@@ -17,7 +17,7 @@ public class ProductController {
 
   private final ProductService productService;
 
-  @PostMapping("/")
+  @PostMapping("/create")
   public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
     try {
       ProductDto newProduct = productService.createProduct(productDto);

@@ -28,7 +28,7 @@ const AdminLayout = ({children, opened, toggle}: AdminLayoutProps) => {
       navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
       padding="md"
     >
-      <AppShell.Header>
+      <AppShell.Header bg={colors.og_green_3}>
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
           <Image

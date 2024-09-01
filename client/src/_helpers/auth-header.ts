@@ -26,8 +26,8 @@ export function authHeader(type: 'json' | 'form' | 'text' = "json"): HeadersInit
       break;
   }
 
-  if (currentUser && currentUser.token) {
-    header["Authorization"] = "Bearer " + currentUser.token;
+  if (currentUser && currentUser.accessToken) {
+    header["Authorization"] = "Bearer " + currentUser.accessToken;
   }
 
   return header;

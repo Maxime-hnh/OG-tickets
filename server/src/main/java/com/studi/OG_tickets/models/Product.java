@@ -1,11 +1,14 @@
 package com.studi.OG_tickets.models;
 
+import com.studi.OG_tickets.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
@@ -33,10 +36,19 @@ public class Product {
 
   private Integer stock = 1000;
 
-  private boolean active;
+  private String city;
 
-  @Enumerated(EnumType.STRING)
-  private Status status;
+  private String venue;
+
+  private String stage;
+
+  private Boolean visible;
+
+  private LocalDate date;
+
+  private LocalTime  startTime;
+
+  private LocalTime endTime;
 
   @Enumerated(EnumType.STRING)
   private Category category;
@@ -45,7 +57,17 @@ public class Product {
     SOLO, DUO, FAMILIALE
   }
 
-  public enum Status {
-    AVAILABLE, UNAVAILABLE
+  public void updateFromDto(ProductDto dto) {
+    if (dto.getName() != null) this.name = dto.getName();
+    if (dto.getDescription() != null) this.description = dto.getDescription();
+    if (dto.getPrice() != null) this.price = dto.getPrice();
+    if (dto.getCategory() != null) this.category = dto.getCategory();
+    if (dto.getStock() != null) this.stock = dto.getStock();
+    if (dto.getCity() != null) this.city = dto.getCity();
+    if (dto.getStage() != null) this.stage = dto.getStage();
+    if (dto.getVisible() != null) this.visible = dto.getVisible();
+    if (dto.getDate() != null) this.date = dto.getDate();
+    if (dto.getStartTime() != null) this.startTime = dto.getStartTime();
+    if (dto.getEndTime() != null) this.endTime = dto.getEndTime();
   }
 }

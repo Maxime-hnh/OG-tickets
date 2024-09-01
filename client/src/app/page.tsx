@@ -1,28 +1,13 @@
 "use client"
 import {Button, Container, Flex, Image, Paper, Text, Title} from "@mantine/core";
 import CarouselEvent from "../_components/CarouselEvent";
-import {useContext, useEffect, useState} from "react";
-import AppContext from "@/app/Context/AppContext";
 import useWindowSize from "@/_components/Utils/useWindowSize";
 import {TABLET_SIZE} from "@/_helpers/constants";
-import {productService} from "@/_services/product.service";
 
 export default function Home() {
 
-  const [test, setTest] = useState();
-  const {isMobile} = useContext(AppContext);
   const {width} = useWindowSize();
   const isTablet = width <= TABLET_SIZE;
-
-
-  useEffect(() => {
-    const getProducts = async () => {
-      const data = await productService.getProducts();
-      console.log(data)
-      if(data) setTest(data);
-    };
-    getProducts()
-  }, []);
 
   return (
     <Container mx={isTablet ? 0 : 30} maw={"100%"} px={0}>

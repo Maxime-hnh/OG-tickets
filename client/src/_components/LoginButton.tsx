@@ -35,8 +35,8 @@ const LoginButton = () => {
   return (
     <>
       {isAuthenticated
-      ? <Button onClick={open} radius={"xl"} mr={10}>Se déconnecter</Button>
-      : <Button onClick={() => authenticationService.logout()} radius={"xl"} mr={10}>Se connecter</Button>
+      ? <Button onClick={() => authenticationService.logout()} radius={"xl"} mr={10}>Se déconnecter</Button>
+      : <Button onClick={open} radius={"xl"} mr={10}>Se connecter</Button>
       }
 
 

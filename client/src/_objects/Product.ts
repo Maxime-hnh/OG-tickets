@@ -1,12 +1,7 @@
-export enum ProductStatus {
-  AVAILABLE = "AVAILABLE",
-  UNAVAILABLE = "UNAVAILABLE"
-}
-
 export enum ProductCategory {
   SOLO = "SOLO",
   DUO = "DUO",
-  FAMILIALE = "FAMILIALE"
+  FAMILY = "FAMILY"
 }
 
 
@@ -18,9 +13,16 @@ export type ProductProps = Partial<{
   image?: string;
   price: number;
   stock: number;
-  active: boolean;
-  status: ProductStatus;
-  category: ProductCategory
+  city: string;
+  venue: string;
+  stage: string;
+  visible: boolean;
+  date: Date | null;
+  startTime: string;
+  endTime: string;
+  category: ProductCategory;
+
+  edit?: boolean;
 }>
 export type FetchedProduct = {
   id: number;
@@ -32,7 +34,13 @@ export default class Product implements ProductProps {
   description = "";
   price = 0;
   stock = 1000;
-  active = true;
-  status = ProductStatus.AVAILABLE;
+  city = "";
+  venue =  "";
+  stage = "";
+  visible = true;
+  date = null;
+  startTime = "";
+  endTime = "";
   category = ProductCategory.DUO;
+  edit = false;
 }

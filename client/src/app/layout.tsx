@@ -18,6 +18,9 @@ import AppContext from "./Context/AppContext";
 import AdminLayout from "@/_components/AdminLayout";
 import RootLayout from "@/_components/RootLayout";
 import { usePathname } from "next/navigation";
+import { Notifications } from '@mantine/notifications';
+import dayjs from "dayjs";
+import 'dayjs/locale/fr';
 
 const inter = Inter({subsets: ["latin"]});
 const themeMantine = createTheme({
@@ -51,6 +54,7 @@ export default function Layout({children}: Readonly<{ children: React.ReactNode;
       <AppContext.Provider value={{
         isMobile
       }}>
+        <Notifications />
         {isAdminRoute
         ? <AdminLayout children={children} opened={opened} toggle={toggle}/>
           : <RootLayout opened={opened} toggle={toggle} children={children}/>

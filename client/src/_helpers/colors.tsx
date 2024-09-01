@@ -5,6 +5,7 @@ export const colors = {
   og_yellow_80 : '#ffe045bf',
   og_green: '#00CB50',
   og_green_2 : '#00A651',
+  og_green_3 : '#00804d',
   og_red: '#BF192B',
   og_red_2 : '#980F30',
   og_red_30 : '#bf192b57',
