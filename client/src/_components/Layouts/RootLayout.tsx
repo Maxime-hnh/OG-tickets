@@ -15,9 +15,9 @@ import Link from "next/link";
 import LoginButton from "@/_components/LoginButton";
 
 interface RootLayoutProps {
-  children : React.ReactNode;
-  opened : boolean;
-  toggle :  () => void;
+  children: React.ReactNode;
+  opened: boolean;
+  toggle: () => void;
 }
 
 const RootLayout = ({children, opened, toggle}: RootLayoutProps) => {
@@ -28,7 +28,7 @@ const RootLayout = ({children, opened, toggle}: RootLayoutProps) => {
       navbar={{width: 300, breakpoint: 'sm', collapsed: {desktop: true, mobile: !opened}}}
       padding="md"
     >
-      <AppShellHeader withBorder={false}>
+      <AppShellHeader withBorder={true}>
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" color={"white"}/>
           <Group justify="space-between" style={{flex: 1}}>
@@ -40,10 +40,22 @@ const RootLayout = ({children, opened, toggle}: RootLayoutProps) => {
             />
             <Group gap={0} visibleFrom="sm">
               <Link href={"/"}>
-                <Button color={"white"} radius={"xl"} mr={10}>Accueil</Button>
+                <Button
+                  variant={"transparent"}
+                  radius={"xl"}
+                  mr={10}
+                  styles={{label: {color: "#000"}}}>
+                  Accueil
+                </Button>
               </Link>
-              <Link href={"/products"}>
-                <Button color={"white"} radius={"xl"} mr={10}>Offres</Button>
+              <Link href={"/shop"}>
+                <Button
+                  variant={"transparent"}
+                  radius={"xl"}
+                  mr={10}
+                  styles={{label: {color: "#000"}}}>
+                  Offres
+                </Button>
               </Link>
               <LoginButton/>
             </Group>

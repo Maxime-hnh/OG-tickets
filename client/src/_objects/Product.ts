@@ -17,7 +17,7 @@ export type ProductProps = Partial<{
   venue: string;
   stage: string;
   visible: boolean;
-  date: Date | null;
+  date: string | null;
   startTime: string;
   endTime: string;
   category: ProductCategory;

@@ -42,6 +42,16 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<ErrorObject> handleUnauthorizedException(UnauthorizedException ex, WebRequest request) {
+    ErrorObject errorObject = new ErrorObject();
+    errorObject.setErrorCode(HttpStatus.UNAUTHORIZED.value());
+    errorObject.setMessage(ex.getMessage());
+    errorObject.setTimestamp(new Date());
+
+    return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorObject> handleGeneralException(Exception ex, WebRequest request) {
     ErrorObject errorObject = new ErrorObject();

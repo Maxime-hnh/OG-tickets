@@ -1,9 +1,12 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {AppShell, Burger, Group, Image, NavLink, Skeleton} from "@mantine/core";
 import {IconBuildingStore, IconHome2, IconLogout, IconSettings} from "@tabler/icons-react";
 import {usePathname} from "next/navigation";
 import Link from "next/link";
 import {colors} from "@/_helpers/colors";
+import AdminContext from "@/app/Context/AdminContext";
+import {AuthenticatedUser, authenticationService} from "@/_services/authentication.service";
+import {FetchedUser} from "@/_objects/User";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -19,10 +22,16 @@ const AdminLayout = ({children, opened, toggle}: AdminLayoutProps) => {
     {icon: IconBuildingStore, label: "Produits", path: "/admin/products"},
     {icon: IconSettings, label: "Paramètres", path: "/admin/settings"},
     {icon: IconLogout, label: "Se déconnecter", path: "/"},
-
   ];
   const pathname = usePathname()
+  const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser | null>(authenticationService.currentUserValue);
+  const [userInfo, setUserInfo] = useState<FetchedUser | null>(null);
+
   return (
+    <AdminContext.Provider value={{
+      authenticatedUser,
+      userInfo
+    }}>
     <AppShell
       header={{height: 60}}
       navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
@@ -58,6 +67,7 @@ const AdminLayout = ({children, opened, toggle}: AdminLayoutProps) => {
       </AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
     </AppShell>
+    </AdminContext.Provider>
   )
 }
 

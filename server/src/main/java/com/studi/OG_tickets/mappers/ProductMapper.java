@@ -15,11 +15,12 @@ public class ProductMapper {
     productDto.setPrice(product.getPrice());
     productDto.setStock(product.getStock());
     productDto.setCity(product.getCity());
+    productDto.setVenue(product.getVenue());
     productDto.setStage(product.getStage());
     productDto.setVisible(product.getVisible());
     productDto.setDate(product.getDate());
-    productDto.setStartTime(productDto.getStartTime());
-    productDto.setEndTime(productDto.getEndTime());
+    productDto.setStartTime(product.getStartTime());
+    productDto.setEndTime(product.getEndTime());
     productDto.setCategory(product.getCategory());
     return productDto;
   }
@@ -34,6 +35,7 @@ public class ProductMapper {
     product.setPrice(productDto.getPrice());
     product.setStock(productDto.getStock());
     product.setCity(productDto.getCity());
+    product.setVenue(productDto.getVenue());
     product.setStage(productDto.getStage());
     product.setVisible(productDto.getVisible());
     product.setDate(productDto.getDate());

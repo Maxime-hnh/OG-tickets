@@ -19,6 +19,7 @@ public class ProductDto {
   private String image;
   private Integer stock;
   private String city;
+  private String venue;
   private String stage;
   private Boolean visible;
   private LocalDate date;

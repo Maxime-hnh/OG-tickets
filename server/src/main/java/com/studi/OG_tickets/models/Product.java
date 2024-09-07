@@ -46,8 +46,10 @@ public class Product {
 
   private LocalDate date;
 
+  @Column(name = "start_time")
   private LocalTime  startTime;
 
+  @Column(name = "end_time")
   private LocalTime endTime;
 
   @Enumerated(EnumType.STRING)
@@ -61,9 +63,11 @@ public class Product {
     if (dto.getName() != null) this.name = dto.getName();
     if (dto.getDescription() != null) this.description = dto.getDescription();
     if (dto.getPrice() != null) this.price = dto.getPrice();
+    if (dto.getImage() != null) this.image = dto.getImage();
     if (dto.getCategory() != null) this.category = dto.getCategory();
     if (dto.getStock() != null) this.stock = dto.getStock();
     if (dto.getCity() != null) this.city = dto.getCity();
+    if (dto.getVenue() != null) this.venue = dto.getVenue();
     if (dto.getStage() != null) this.stage = dto.getStage();
     if (dto.getVisible() != null) this.visible = dto.getVisible();
     if (dto.getDate() != null) this.date = dto.getDate();

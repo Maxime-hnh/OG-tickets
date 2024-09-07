@@ -1,3 +1,5 @@
+import {AuthRole} from "@/_services/authentication.service";
+
 export type UserProps = Partial<{
   id: number;
   cur: string;
@@ -5,7 +7,7 @@ export type UserProps = Partial<{
   fullname: string;
   phone: string;
   name: string;
-  role:string;
+  role:AuthRole;
   cgvCheck: boolean;
 }>;
 

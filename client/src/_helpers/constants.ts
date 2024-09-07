@@ -17,10 +17,10 @@ export const sportsList = [
   "Football",
   "Gymnastique",
   "Judo",
-  "Sports-équestres",
+  "Sports équestres",
   "Surf",
   "Tennis",
-  "Tennis-de-table"
+  "Tennis de table"
 ]
 export const venueList = [
   "Arena Bercy",

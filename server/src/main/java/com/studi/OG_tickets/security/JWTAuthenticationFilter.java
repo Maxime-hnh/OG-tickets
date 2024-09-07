@@ -1,11 +1,14 @@
 package com.studi.OG_tickets.security;
 
+import com.studi.OG_tickets.exceptions.InternalServerException;
+import com.studi.OG_tickets.exceptions.UnauthorizedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +29,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                                   @NonNull HttpServletResponse response,
                                   @NonNull FilterChain filterChain)
           throws ServletException, IOException {
+    try {
+
     String token = getJWTFromRequest(request);
     if (StringUtils.hasText(token) && tokenGenerator.validateToken(token)) {
       String email = tokenGenerator.getEmailFromToken(token);
@@ -39,6 +44,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
     filterChain.doFilter(request, response);
+    } catch (AuthenticationCredentialsNotFoundException e) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.setContentType("application/json");
+      response.getWriter().write("{\"error\": \"Unauthorized: JWT was expired or incorrect\"}");
+    } catch (Exception e) {
+      throw new InternalServerException(e.getMessage(), e.getCause());
+    }
   }
 
   private String getJWTFromRequest(HttpServletRequest request) {

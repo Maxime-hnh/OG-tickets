@@ -15,12 +15,14 @@ import React, {useEffect, useState } from "react";
 import useWindowSize from "@/_components/Utils/useWindowSize";
 import {MOBILE_SIZE} from "@/_helpers/constants";
 import AppContext from "./Context/AppContext";
-import AdminLayout from "@/_components/AdminLayout";
-import RootLayout from "@/_components/RootLayout";
+import AdminLayout from "@/_components/Layouts/AdminLayout";
+import RootLayout from "@/_components/Layouts/RootLayout";
 import { usePathname } from "next/navigation";
 import { Notifications } from '@mantine/notifications';
 import dayjs from "dayjs";
 import 'dayjs/locale/fr';
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
 
 const inter = Inter({subsets: ["latin"]});
 const themeMantine = createTheme({
@@ -28,6 +30,8 @@ const themeMantine = createTheme({
 });
 
 export default function Layout({children}: Readonly<{ children: React.ReactNode; }>) {
+
+  dayjs.extend(customParseFormat);
 
   const [opened, {toggle}] = useDisclosure();
   const { width } = useWindowSize();

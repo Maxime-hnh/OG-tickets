@@ -1,14 +1,14 @@
 package com.studi.OG_tickets.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.studi.OG_tickets.security.SecurityConstants.JWT_SECRET;
+
 
 @Component
 public class JWTGenerator {
@@ -24,7 +24,7 @@ public class JWTGenerator {
 
     return Jwts.builder()
             .subject(email)
-            .signWith(SecurityConstants.JWT_SECRET)
+            .signWith(JWT_SECRET)
             .issuedAt(new Date())
             .expiration(expireDate)
             .compact();
@@ -33,7 +33,7 @@ public class JWTGenerator {
   public String getEmailFromToken(String token) {
     try {
       Jws<Claims> claims = Jwts.parser()
-              .verifyWith(SecurityConstants.JWT_SECRET)
+              .verifyWith(JWT_SECRET)
               .build()
               .parseSignedClaims(token);
       return claims.getPayload().getSubject();
@@ -45,7 +45,7 @@ public class JWTGenerator {
   public boolean validateToken(String token) {
     try {
       Jwts.parser()
-              .verifyWith(SecurityConstants.JWT_SECRET)
+              .verifyWith(JWT_SECRET)
               .build()
               .parseSignedClaims(token);
       return true;
@@ -58,7 +58,7 @@ public class JWTGenerator {
   private Boolean isTokenExpired(String token) {
     try {
       Date expirationDate = Jwts.parser()
-              .verifyWith(SecurityConstants.JWT_SECRET)
+              .verifyWith(JWT_SECRET)
               .build()
               .parseSignedClaims(token)
               .getPayload()

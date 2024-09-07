@@ -1,19 +1,18 @@
 import {Form, Formik} from "formik";
-import {Dispatch, forwardRef, Ref, RefObject, SetStateAction, useRef, useState} from "react";
+import {Dispatch, forwardRef, RefObject, SetStateAction, useRef, useState} from "react";
 import * as Yup from "yup";
 import {
-  ActionIcon, Avatar, Flex,
+  ActionIcon,
   Grid,
   Group,
   NumberInput,
   Paper, rem,
-  Select, Skeleton,
+  Select,
   Textarea,
-  TextInput,
   Title
 } from "@mantine/core";
 import {
-  IconBuildingStadium, IconCalendar, IconClock, IconMapPin, IconPhoto, IconPingPong, IconTournament,
+  IconBuildingStadium, IconCalendar, IconClock, IconMapPin, IconPingPong, IconTournament,
   IconUsers
 } from "@tabler/icons-react";
 import Product, {FetchedProduct, ProductCategory} from "@/_objects/Product";
@@ -46,20 +45,20 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
       initialValues={formValues}
       enableReinitialize={true}
       validationSchema={Yup.object().shape({
-        name: Yup.string().required("name error"),
-        description: Yup.string().required("description error"),
-        price: Yup.number().required("price error"),
-        stock: Yup.number().required("stock error"),
-        city: Yup.string().required("city error"),
-        venue: Yup.string().required("venue error"),
-        stage: Yup.string().required("stage error"),
-        visible: Yup.boolean().required("visible error"),
-        date: Yup.string().required("date error"),
-        startTime: Yup.string().required("startTime error"),
-        endTime: Yup.string().required("endTime error"),
+        name: Yup.string().required("Le nom de la discipline est requis"),
+        description: Yup.string(),
+        price: Yup.number().required("Le prix est requis"),
+        stock: Yup.number(),
+        city: Yup.string().required("La ville est requis"),
+        venue: Yup.string().required("Le lieu est requis"),
+        stage: Yup.string().required("La phase est requise"),
+        visible: Yup.boolean().required("Le statut est requis"),
+        date: Yup.date().required("La date est requise"),
+        startTime: Yup.string().required("L'heure de début est requis"),
+        endTime: Yup.string().required("L'heure de fin est requis"),
         category: Yup.string()
           .oneOf([ProductCategory.SOLO, ProductCategory.DUO, ProductCategory.FAMILY])
-          .required("category error"),
+          .required("La catégorie est requise"),
       })}
       onSubmit={async (values) => {
         handleSubmitForm(values, setIsLoading)
@@ -68,7 +67,7 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
       {({values, handleChange, handleSubmit, errors, touched, setFieldValue}) => (
         <Form onSubmit={handleSubmit}>
           <Grid grow>
-            <Grid.Col span={8}>
+            <Grid.Col span={{ base: 12, xs: 12, sm: 12, md: 12, lg: 8, xl: 7 }}>
               <Paper px={"lg"} py={"md"} shadow='md' radius={'sm'}>
                 <Title order={3} mb={10}>Information</Title>
                     <Select
@@ -81,7 +80,7 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
                       error={touched.name && errors.name}
                       onChange={(val) => {
                         setFieldValue(`name`, val);
-                        setFieldValue('image', `/pictograms/${val}.avif`)
+                        setFieldValue('image', `/pictograms/${val!.replace(/ /g, "-")}.avif`)
                       }}
                       style={{flex: 1}}
                       clearable
@@ -132,13 +131,14 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
                   leftSection={<IconCalendar/>}
                   leftSectionPointerEvents="none"
                   label={"Date"}
-                  value={values.date}
+                  value={new Date(values.date!)}
                   onChange={(val) => setFieldValue("date", val)}
                 />
                 <Group justify="flex-start" align="center" mt={"md"}>
                   <TimeInput
                     name="startTime"
                     label="Début"
+                    value={values.startTime}
                     ref={startClockRef}
                     leftSection={startTimeControl(startClockRef)}
                     onChange={(e) =>  setFieldValue("startTime", e.target.value)}
@@ -147,6 +147,7 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
                   <TimeInput
                     name="endTime"
                     label="Fin"
+                    value={values.endTime}
                     ref={endClockRef}
                     leftSection={startTimeControl(endClockRef)}
                     onChange={(e) =>  setFieldValue("endTime", e.target.value)}
@@ -157,7 +158,7 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
               </Paper>
             </Grid.Col>
 
-            <Grid.Col span={4}>
+            <Grid.Col span={{ base: 12, xs: 12, sm: 12, md: 12, lg: 4, xl: 5 }}>
               <Paper px={"lg"} py={"md"} shadow='md' radius={'sm'}>
                 <Title order={3} mb={10}>Statut</Title>
                 <Select

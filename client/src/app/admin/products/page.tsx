@@ -16,11 +16,17 @@ const ProductsPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<FetchedProduct | Product | undefined>(undefined);
 
+
   const getProducts = async () => {
+    try {
     setIsLoading(true);
     const data = await productService.getProducts();
     if (data) setProducts(data as FetchedProduct[]);
+    } catch(e) {
+      console.error(e)
+    } finally {
     setIsLoading(false);
+    }
   };
 
   const quitForm = () => {
@@ -36,7 +42,7 @@ const ProductsPage = () => {
         ? await productService.updateById((values as FetchedProduct).id, values)
         : await productService.addProduct(values)
       await getProducts();
-      // quitForm();
+      quitForm();
       notifications.show({
         icon: <IconCheck/>,
         color: "green",
@@ -62,9 +68,9 @@ const ProductsPage = () => {
     setFormValues({edit: true, ...product})
   };
 
-  const deleteProduct = async (productId:number) => {
+  const deleteProduct = async (productId: number) => {
     try {
-    await productService.deleteById(productId)
+      await productService.deleteById(productId)
       notifications.show({
         icon: <IconCheck/>,
         color: "green",
@@ -72,7 +78,7 @@ const ProductsPage = () => {
         title: "Suppression",
         message: "Le produit a été supprimé"
       })
-    } catch(e) {
+    } catch (e) {
       notifications.show({
         icon: <IconCheck/>,
         color: "red",
