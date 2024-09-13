@@ -55,6 +55,8 @@ public class Product {
   @Enumerated(EnumType.STRING)
   private Category category;
 
+  private Integer quantitySold;
+
   public enum Category {
     SOLO, DUO, FAMILIALE
   }

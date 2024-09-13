@@ -26,36 +26,12 @@ public class OrderService {
 
   private OrderRepository orderRepository;
   private ProductRepository productRepository;
+  private ProductService productService;
   private QrCodeService qrCodeService;
 
   @Transactional
   public OrderDto createOrder(OrderDto orderDto, UserEntity user) throws IOException, WriterException {
-    List<ProductFromOrderDto> productsFromOrderDto = orderDto.getProducts();
-    List<Long> productIds = productsFromOrderDto.stream()
-            .map(ProductFromOrderDto::getId)
-            .toList();
-
-    List<Product> products = productRepository.findAllById(productIds);
-    if (products.size() != productsFromOrderDto.size()) {
-      throw new IllegalArgumentException("Certains produits n'ont pas été trouvés dans la base de données.");
-    }
-    for (ProductFromOrderDto productFromOrderDto : productsFromOrderDto) {
-      Product matchingProduct = products.stream()
-              .filter(product -> product.getId().equals(productFromOrderDto.getId()))
-              .findFirst()
-              .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé : " + productFromOrderDto.getId()));
-
-      if (matchingProduct.getPrice().compareTo(productFromOrderDto.getPrice()) != 0) {
-        throw new IllegalArgumentException("Le prix du produit " + productFromOrderDto.getId() + " ne correspond pas.");
-      }
-    }
-    BigDecimal totalCalculated = products.stream()
-            .map(Product::getPrice)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    if (totalCalculated.compareTo(orderDto.getAmount()) != 0) {
-      throw new IllegalArgumentException("Le montant total de la commande ne correspond pas à la somme des produits.");
-    }
+    productService.validateAndUpdateStock(orderDto.getProducts(), orderDto.getAmount());
 
     Order order = OrderMapper.toEntity(orderDto);
     // add userId to order

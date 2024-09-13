@@ -26,4 +26,5 @@ public class ProductDto {
   private LocalTime startTime;
   private LocalTime endTime;
   private Product.Category category;
+  private Integer quantitySold;
 }
