@@ -11,5 +11,5 @@ public class ProductFromOrderDto {
 
   private Long id;
   private BigDecimal price;
-
+  private Integer quantity;
 }

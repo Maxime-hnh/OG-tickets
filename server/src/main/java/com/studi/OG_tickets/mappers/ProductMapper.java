@@ -22,6 +22,7 @@ public class ProductMapper {
     productDto.setStartTime(product.getStartTime());
     productDto.setEndTime(product.getEndTime());
     productDto.setCategory(product.getCategory());
+    productDto.setQuantitySold(product.getQuantitySold());
     return productDto;
   }
 
@@ -42,6 +43,7 @@ public class ProductMapper {
     product.setStartTime(productDto.getStartTime());
     product.setEndTime(productDto.getEndTime());
     product.setCategory(productDto.getCategory());
+    product.setQuantitySold(productDto.getQuantitySold());
     return product;
   }
 }
