@@ -45,7 +45,7 @@ public class AuthService {
       user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
       user.setKey(UUID.randomUUID());
 
-      Role roles = roleService.getByName(Role.RoleName.USER);
+      Role roles = roleService.getByName(Role.RoleName.ADMIN);
       user.setRoles(Collections.singletonList(roles));
 
       userRepository.save(user);

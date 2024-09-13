@@ -1,42 +1,57 @@
 package com.studi.OG_tickets.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.studi.OG_tickets.dto.ProductFromOrderDto;
+import com.studi.OG_tickets.services.ProductsConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_entity")
+@Table(name = "customer_order")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class UserEntity {
+public class Order {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false, unique = true)
+  private UUID cur;
+
+  private BigDecimal amount;
+
+  private String status;
+
+  private String invoice;
+
   private UUID key;
 
-  @Column(length = 50, nullable = false)
-  private String firstName;
+  private String finalKey;
 
-  @Column(length = 50, nullable = false)
-  private String lastName;
+//  @Lob
+  @Column(columnDefinition = "BYTEA")
+  private byte[] qrCode;
 
-  @Column(nullable = false, unique = true)
-  private String email;
+  @Convert(converter = ProductsConverter.class)
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "products", columnDefinition = "json")
+  private List<ProductFromOrderDto> products;
 
-  @Column(nullable = false)
-  private String password;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JsonIgnore
+  @JoinColumn(name = "user_id", nullable = false)
+  private UserEntity user;
 
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
@@ -53,13 +68,4 @@ public class UserEntity {
   protected void onUpdate() {
     this.updatedAt = LocalDateTime.now();
   }
-
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  @JoinTable(name = "user_entity_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-          inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-  private List<Role> roles = new ArrayList<>();
-
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnore
-  private List<Order> orders;
 }

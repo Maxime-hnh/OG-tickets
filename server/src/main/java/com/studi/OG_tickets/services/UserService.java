@@ -10,12 +10,21 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
 public class UserService {
 
   private final UserRepository userRepository;
+
+  @Transactional
+  public UserDto getById(Long id) {
+    UserEntity user = userRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("User not found"));
+    return UserMapper.toDto(user);
+  }
 
   @Transactional
   public UserWithRoleDto getByEmail(String email) {
