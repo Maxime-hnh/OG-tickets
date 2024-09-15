@@ -2,6 +2,19 @@ import toast from "react-hot-toast";
 import {authenticationService} from "@/_services/authentication.service";
 import {retryOriginalRequest} from "@/_helpers/helper";
 
+export class ApiError extends Error {
+  errorCode: number;
+  timestamp: string;
+
+  constructor(errorCode: number, message: string, timestamp: string) {
+    super(message);
+    this.errorCode = errorCode;
+    this.timestamp = timestamp;
+    this.name = 'ApiError';
+
+    Object.setPrototypeOf(this, ApiError.prototype);
+  }
+}
 export async function handleResponse<TData = any>(response: Response): Promise<TData | TData[] > {
   const text: string = await response.text();
   let data = text && JSON.parse(text);
@@ -41,7 +54,10 @@ export async function handleResponse<TData = any>(response: Response): Promise<T
         position: "bottom-center"
       });
     }
-    const error = (data && data.message) || response.statusText;
+    const errorCode = response.status;
+    const errorMessage = (data && data.message) || response.statusText;
+    const timestamp = new Date().toISOString();
+    const error = new ApiError(errorCode, errorMessage, timestamp);
     return Promise.reject(error);
   }
   return data;

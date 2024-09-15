@@ -1,0 +1,22 @@
+#rootLayout {
+  .link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-left: var(--mantine-spacing-md);
+    padding-right: var(--mantine-spacing-md);
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    font-size: var(--mantine-font-size-sm);
+
+    @media (max-width: 	768px) {
+      height: 42px;
+      width: 100%;
+    }
+
+    &:hover{
+      background-color: #F8F9FA;
+    }
+  }
+}

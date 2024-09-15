@@ -37,7 +37,6 @@ export default class Product implements ProductProps {
   city = "";
   venue =  "";
   stage = "";
-  visible = true;
   date = null;
   startTime = "";
   endTime = "";

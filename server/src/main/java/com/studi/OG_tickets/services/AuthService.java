@@ -3,6 +3,7 @@ package com.studi.OG_tickets.services;
 import com.studi.OG_tickets.dto.*;
 import com.studi.OG_tickets.exceptions.BadRequestException;
 import com.studi.OG_tickets.exceptions.NotFoundException;
+import com.studi.OG_tickets.mappers.UserMapper;
 import com.studi.OG_tickets.models.RefreshToken;
 import com.studi.OG_tickets.models.Role;
 import com.studi.OG_tickets.models.UserEntity;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -35,7 +35,7 @@ public class AuthService {
   private final RefreshTokenService refreshTokenService;
 
   @Transactional
-  public String register(RegisterDto registerDto) {
+  public UserDto register(RegisterDto registerDto) {
     boolean exists = userService.userEntityExistByEmail(registerDto.getEmail());
     if (!exists) {
       UserEntity user = new UserEntity();
@@ -45,11 +45,11 @@ public class AuthService {
       user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
       user.setKey(UUID.randomUUID());
 
-      Role roles = roleService.getByName(Role.RoleName.ADMIN);
+      Role roles = roleService.getByName(Role.RoleName.USER);
       user.setRoles(Collections.singletonList(roles));
 
-      userRepository.save(user);
-      return "User registered successfully with email: " + user.getEmail();
+      UserEntity newUser = userRepository.save(user);
+     return UserMapper.toDto(newUser);
     } else {
       throw new BadRequestException("User already exists with email: " + registerDto.getEmail());
     }

@@ -22,6 +22,7 @@ import { Notifications } from '@mantine/notifications';
 import dayjs from "dayjs";
 import 'dayjs/locale/fr';
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import './globals.css';
 
 
 const inter = Inter({subsets: ["latin"]});

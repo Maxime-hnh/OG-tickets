@@ -1,5 +1,5 @@
 import {Button, Input, Modal} from "@mantine/core";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {
   AuthenticatedUser,
@@ -10,16 +10,21 @@ import {
 import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import {useRouter} from 'next/navigation';
+import {notifications} from "@mantine/notifications";
+import {IconCheck} from "@tabler/icons-react";
 
-const LoginButton = () => {
+interface LoginButtonProps {
+  grow?: boolean;
+}
+
+const LoginButton = ({grow = false}: LoginButtonProps) => {
 
   const [opened, {open, close}] = useDisclosure(false);
   const router = useRouter();
-  const isAuthenticated = authenticationService.isLogged()
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authenticationService.isLogged())
   let authenticationRequest = new AuthenticationRequest()
 
   const redirectUser = (user: AuthenticatedUser) => {
-    const username = encodeURIComponent(user.firstName)
     switch (user.role) {
       case AuthRole.ADMIN:
         router.push(`/admin`);
@@ -32,11 +37,35 @@ const LoginButton = () => {
     }
   }
 
+  const logout = () => {
+    authenticationService.logout()
+    setIsAuthenticated(false)
+    notifications.show({
+      icon: <IconCheck/>,
+      color: "green",
+      position: "top-right",
+      title: "Déconnexion",
+      message: "Vous vous êtes déconnecté avec succès !"
+    })
+  }
+
   return (
     <>
       {isAuthenticated
-      ? <Button onClick={() => authenticationService.logout()} radius={"xl"} mr={10}>Se déconnecter</Button>
-      : <Button onClick={open} radius={"xl"} mr={10}>Se connecter</Button>
+        ? <Button
+          onClick={logout}
+          radius={"sm"}
+          style={{flex: grow ? 1 : ""}}
+        >
+          Se déconnecter
+        </Button>
+        : <Button
+          onClick={open}
+          radius={"sm"}
+          style={{flex: grow ? 1 : ""}}
+        >
+          Se connecter
+        </Button>
       }
 
 

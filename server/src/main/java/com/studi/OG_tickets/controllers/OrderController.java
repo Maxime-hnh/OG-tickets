@@ -3,6 +3,7 @@ package com.studi.OG_tickets.controllers;
 
 import com.google.zxing.WriterException;
 import com.studi.OG_tickets.dto.OrderDto;
+import com.studi.OG_tickets.dto.ProductDto;
 import com.studi.OG_tickets.exceptions.InternalServerException;
 import com.studi.OG_tickets.exceptions.NotFoundException;
 import com.studi.OG_tickets.models.UserEntity;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/order")
@@ -50,6 +52,26 @@ public class OrderController {
       return new ResponseEntity<>(qrCode, headers, HttpStatus.OK);
     } catch (InternalServerException e) {
       throw new InternalServerException(e.getMessage(), e.getCause());
+    }
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<OrderDto> getOrderById(@PathVariable Long id) {
+    try {
+      OrderDto orderDto = orderService.getById(id);
+      return ResponseEntity.ok(orderDto);
+    } catch (NotFoundException e) {
+      throw new NotFoundException(e.getMessage());
+    }
+  }
+
+  @GetMapping("/all")
+  public ResponseEntity<List<OrderDto>> getAllProducts() {
+    try {
+      List<OrderDto> ordersDto = orderService.getAllOrders();
+      return ResponseEntity.ok(ordersDto);
+    } catch (NotFoundException e) {
+      throw new NotFoundException(e.getMessage());
     }
   }
 }

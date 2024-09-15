@@ -11,7 +11,6 @@ const ProductsPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<FetchedProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<FetchedProduct | null>(null);
-  console.log(selectedProduct);
 
   const getProducts = async () => {
     setIsLoading(true);

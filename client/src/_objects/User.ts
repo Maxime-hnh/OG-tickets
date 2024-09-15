@@ -4,13 +4,19 @@ export type UserProps = Partial<{
   id: number;
   cur: string;
   email: string;
-  fullname: string;
-  phone: string;
-  name: string;
+  firstName: string;
+  lastName:string;
   role:AuthRole;
-  cgvCheck: boolean;
 }>;
 
 export type FetchedUser = {
   id: number;
 } & UserProps;
+
+export class UserSignup implements UserProps{
+  email = "";
+  firstName = "";
+  lastName = "";
+  password = "";
+  confirmPassword = "";
+}

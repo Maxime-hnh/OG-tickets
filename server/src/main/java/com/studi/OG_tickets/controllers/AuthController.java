@@ -1,9 +1,6 @@
 package com.studi.OG_tickets.controllers;
 
-import com.studi.OG_tickets.dto.AuthResponseDto;
-import com.studi.OG_tickets.dto.LoginDto;
-import com.studi.OG_tickets.dto.RefreshTokenRequestDto;
-import com.studi.OG_tickets.dto.RegisterDto;
+import com.studi.OG_tickets.dto.*;
 import com.studi.OG_tickets.exceptions.BadRequestException;
 import com.studi.OG_tickets.services.AuthService;
 import lombok.AllArgsConstructor;
@@ -31,11 +28,11 @@ public class AuthController {
     }
   }
 
-  @PostMapping("/register")
-  public ResponseEntity<String> registerUser(@RequestBody RegisterDto registerDto) {
+  @PostMapping("/signup")
+  public ResponseEntity<UserDto> registerUser(@RequestBody RegisterDto registerDto) {
     try {
-      String response = authService.register(registerDto);
-      return ResponseEntity.ok(response);
+      UserDto newUser = authService.register(registerDto);
+      return ResponseEntity.ok().body(newUser);
     } catch (BadRequestException e) {
       throw new BadRequestException(e.getMessage());
     }

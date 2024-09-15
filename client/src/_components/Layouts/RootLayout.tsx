@@ -6,13 +6,16 @@ import "@mantine/notifications/styles.css";
 import {
   AppShellHeader,
   AppShellMain,
-  AppShellNavbar, AppShellSection, Button,
+  AppShellNavbar, AppShellSection, Divider,
   Text
 } from '@mantine/core';
-import {AppShell, Burger, Group, Image, UnstyledButton} from '@mantine/core';
+import {AppShell, Burger, Group, Image} from '@mantine/core';
 import React from "react";
 import Link from "next/link";
 import LoginButton from "@/_components/LoginButton";
+import SignupButton from "@/_components/SignupButton";
+import "./RootLayout.scss";
+import FooterLayout from "@/_components/Layouts/FooterLayout";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -24,56 +27,48 @@ const RootLayout = ({children, opened, toggle}: RootLayoutProps) => {
 
   return (
     <AppShell
+      id={"rootLayout"}
       header={{height: 60}}
       navbar={{width: 300, breakpoint: 'sm', collapsed: {desktop: true, mobile: !opened}}}
       padding="md"
     >
       <AppShellHeader withBorder={true}>
-        <Group h="100%" px="md">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" color={"white"}/>
-          <Group justify="space-between" style={{flex: 1}}>
+          <Group justify="space-between" style={{flex: 1}} h={"100%"} px={"md"}>
             <Image
               radius={'xs'}
               w={"48px"}
               src="/logo_OG.svg"
               alt="logo"
             />
-            <Group gap={0} visibleFrom="sm">
-              <Link href={"/"}>
-                <Button
-                  variant={"transparent"}
-                  radius={"xl"}
-                  mr={10}
-                  styles={{label: {color: "#000"}}}>
-                  Accueil
-                </Button>
-              </Link>
-              <Link href={"/shop"}>
-                <Button
-                  variant={"transparent"}
-                  radius={"xl"}
-                  mr={10}
-                  styles={{label: {color: "#000"}}}>
-                  Offres
-                </Button>
-              </Link>
+            <Group gap={0} visibleFrom="sm" h={"100%"}>
+              <Link href={"/"} className={"link"}>Accueil</Link>
+              <Link href={"/shop"} className={"link"}>Offres</Link>
+              <Link href={"/shop"} className={"link"}>Contact</Link>
+            </Group>
+            <Group visibleFrom="sm">
+              <SignupButton/>
               <LoginButton/>
             </Group>
+          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" color={"black"}/>
           </Group>
-        </Group>
       </AppShellHeader>
 
       <AppShellNavbar py="md" px={4}>
-        <UnstyledButton className={""}>Accueil</UnstyledButton>
-        <UnstyledButton className={""}>Offres</UnstyledButton>
-        <UnstyledButton className={""}>Se connecter</UnstyledButton>
+        <Link href={"/"} className={"link"}>Accueil</Link>
+        <Link href={"/shop"} className={"link"}>Offres</Link>
+        <Link href={"/shop"} className={"link"}>Contact</Link>
+        <Divider my="sm" />
+        <Group align={"center"} justify={"space-between"}>
+          <SignupButton grow={true}/>
+          <LoginButton grow={true}/>
+        </Group>
       </AppShellNavbar>
 
-      <AppShellMain>
+      <AppShellMain px={0} pt={"60px"}>
         {children}
       </AppShellMain>
       <AppShellSection>
-        <Text>footer</Text>
+        <FooterLayout/>
       </AppShellSection>
     </AppShell>
   );

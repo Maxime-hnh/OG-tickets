@@ -20,5 +20,5 @@ public class OrderDto {
   private byte[] qrCode;
   private List<ProductFromOrderDto> products;
 
-  private UserEntity user;
+  private Long userId;
 }

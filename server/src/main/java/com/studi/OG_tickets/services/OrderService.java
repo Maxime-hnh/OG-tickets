@@ -2,11 +2,9 @@ package com.studi.OG_tickets.services;
 
 import com.google.zxing.WriterException;
 import com.studi.OG_tickets.dto.OrderDto;
-import com.studi.OG_tickets.dto.ProductFromOrderDto;
 import com.studi.OG_tickets.exceptions.NotFoundException;
 import com.studi.OG_tickets.mappers.OrderMapper;
 import com.studi.OG_tickets.models.Order;
-import com.studi.OG_tickets.models.Product;
 import com.studi.OG_tickets.models.UserEntity;
 import com.studi.OG_tickets.repository.OrderRepository;
 import com.studi.OG_tickets.repository.ProductRepository;
@@ -15,7 +13,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -25,7 +22,6 @@ import java.util.stream.Collectors;
 public class OrderService {
 
   private OrderRepository orderRepository;
-  private ProductRepository productRepository;
   private ProductService productService;
   private QrCodeService qrCodeService;
 
@@ -71,5 +67,7 @@ public class OrderService {
     }
     return orders.stream().map(OrderMapper::toDto).collect(Collectors.toList());
   }
+
+
 
 }

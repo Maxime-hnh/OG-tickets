@@ -1,6 +1,6 @@
 import {BehaviorSubject, Observable} from 'rxjs';
 import {handleResponse} from "@/_helpers/handle-response";
-import {FetchedUser} from "@/_objects/User";
+import {FetchedUser, UserSignup} from "@/_objects/User";
 import {authHeader} from "@/_helpers/auth-header";
 
 export enum AuthRole {
@@ -32,17 +32,13 @@ class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  async signup(body: any) {
+  async signup(body: UserSignup) {
     const requestOptions = {
       method: 'POST',
       headers: authHeader(),
       body: JSON.stringify(body),
     };
-    const response = await fetch('/api/auth/signup', requestOptions);
-    const user = await handleResponse(response)
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    this.currentUserSubject.next(user);
-    return user;
+    return await handleResponse(await fetch(`/api/auth/signup`, requestOptions));
   }
 
   async login(values: AuthenticationRequest): Promise<AuthenticatedUser | void> {
@@ -75,7 +71,7 @@ class AuthenticationService {
     return user;
   }
 
-  isLogged():boolean {
+  isLogged(): boolean {
     const currentUser = localStorage.getItem('currentUser');
     return currentUser !== null;
   }

@@ -73,7 +73,6 @@ public class ProductService {
       throw new IllegalArgumentException("Certains produits n'ont pas été trouvés dans la base de données.");
     }
 
-    // Calculer le montant total des produits commandés en tenant compte des quantités
     BigDecimal totalCalculated = productsFromOrderDto.stream()
             .map(productFromOrderDto -> {
               Product matchingProduct = products.stream()
@@ -98,7 +97,7 @@ public class ProductService {
                               + productFromOrderDto.getQuantity()
               );
 
-              // return amount for this product (price * quantity)
+              // return total amount for this product (price * quantity)
               return matchingProduct.getPrice().multiply(BigDecimal.valueOf(productFromOrderDto.getQuantity()));
             })
             .reduce(BigDecimal.ZERO, BigDecimal::add);  //Cumulate amounts

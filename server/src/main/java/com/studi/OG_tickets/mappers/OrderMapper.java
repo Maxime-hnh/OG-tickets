@@ -16,7 +16,7 @@ public class OrderMapper {
     orderDto.setFinalKey(order.getFinalKey());
     orderDto.setQrCode(order.getQrCode());
     orderDto.setProducts(order.getProducts());
-    orderDto.setUser(order.getUser());
+    orderDto.setUserId(order.getUser().getId());
     return orderDto;
   }
 
@@ -31,7 +31,6 @@ public static Order toEntity(OrderDto orderDto) {
   order.setFinalKey(orderDto.getFinalKey());
   order.setQrCode(orderDto.getQrCode());
   order.setProducts(orderDto.getProducts());
-  order.setUser(orderDto.getUser());
   return order;
   }
 }
