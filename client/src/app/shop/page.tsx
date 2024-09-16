@@ -1,6 +1,6 @@
 "use client"
-import {Box, Button, Divider, Group, ScrollArea, Stack, Stepper, Text, Title, Transition} from "@mantine/core";
-import {useEffect, useState} from "react";
+import {Box, Button, Divider, Group, Image, ScrollArea, Stack, Stepper, Text, Title, Transition} from "@mantine/core";
+import React, {useEffect, useState} from "react";
 import {FetchedProduct} from "@/_objects/Product";
 import {productService} from "@/_services/product.service";
 import ShopCard from "@/app/shop/ShopCard";
@@ -8,11 +8,11 @@ import {IconCheck, IconChevronRight, IconShoppingCart, IconShoppingCartCopy} fro
 import CustomLoading from "@/_components/CustomLoading";
 import styles from './ShopPage.module.scss';
 import {AuthenticatedUser, AuthenticationRequest, authenticationService} from "@/_services/authentication.service";
-import Order, {FetchedOrder, OrderProps, SelectedProducts} from "@/_objects/Order";
+import Order, {FetchedOrder, SelectedProducts} from "@/_objects/Order";
 import {orderService} from "@/_services/order.service";
 import LoginForm from "@/_components/LoginForm";
 import {notifications} from "@mantine/notifications";
-import PaiementForm from "@/_components/PaiementForm/PaiementForm";
+import PaymentForm from "@/_components/PaymentForm";
 
 const ProductsPage = () => {
 
@@ -22,6 +22,7 @@ const ProductsPage = () => {
   const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser | null>(authenticationService.currentUserValue);
   const [order, setOrder] = useState<FetchedOrder | null>(null);
   const [openLogin, setOpenLogin] = useState<boolean>(false);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const getProducts = async () => {
     setIsLoading(true);
@@ -65,12 +66,17 @@ const ProductsPage = () => {
   };
 
   const calculateTotalPrice = () => {
-    return parseFloat(
+    const totalPrice = parseFloat(
       selectedProducts
         .reduce((total, product) => total + (product.price! * product.quantity!), 0)
         .toFixed(2)
     )
+    setTotalPrice(totalPrice);
   };
+
+  useEffect(() => {
+    calculateTotalPrice()
+  }, [selectedProducts])
 
   const goToPayment = async (selectedProducts: SelectedProducts[], amount: number, userId: number | null | undefined) => {
     if (authenticatedUser === null) return setOpenLogin(true);
@@ -123,13 +129,13 @@ const ProductsPage = () => {
           <Stack py={'md'}>
             <Group justify={"space-between"} align={"center"}>
               <Text fz={"1.5rem"} fw={700} className={"titleFont"}>Total : </Text>
-              <Text fz={"1.5rem"} fw={700} className={"titleFont"}>{calculateTotalPrice()} €</Text>
+              <Text fz={"1.5rem"} fw={700} className={"titleFont"}>{totalPrice} €</Text>
             </Group>
             <Button
               radius={"xl"}
               rightSection={<IconChevronRight/>}
               leftSection={!selectedProducts ? <IconShoppingCart/> : <IconShoppingCartCopy/>}
-              onClick={() => goToPayment(selectedProducts as SelectedProducts[], calculateTotalPrice(), authenticatedUser?.id)}
+              onClick={() => goToPayment(selectedProducts as SelectedProducts[], totalPrice, authenticatedUser?.id)}
             >
               Procéder au paiement
             </Button>
@@ -139,7 +145,7 @@ const ProductsPage = () => {
         <Box w={"100%"} h={"100%"} p={"md"}>
           <ScrollArea h={"100%"}>
             <Transition
-              mounted={order !== null}
+              mounted={order === null}
               transition="slide-down"
               duration={400}
               timingFunction="ease"
@@ -159,7 +165,7 @@ const ProductsPage = () => {
               }
             </Transition>
             <Transition
-              mounted={order === null && authenticatedUser !== null}
+              mounted={order !== null && authenticatedUser !== null}
               transition="slide-up"
               duration={400}
               timingFunction="ease"
@@ -167,15 +173,20 @@ const ProductsPage = () => {
               {(styles) =>
                 <Box style={styles}>
                   <Group justify={"space-between"} align={"flex-start"}>
-                    <Stack>
+                    <Stack gap={"xs"}>
                       <Text>Nom : {authenticatedUser?.firstName} {authenticatedUser?.lastName}</Text>
                       <Text>Adresse de facturation :</Text>
                       <Text>Adresse mail : {authenticatedUser?.email}</Text>
                     </Stack>
-                    <Text fw={700}>N° de commande : 123456789</Text>
+                    <Text fw={700}>N° de commande : {order?.invoice}</Text>
                   </Group>
                   <Divider my={20}/>
-                  <PaiementForm authenticatedUser={authenticatedUser!}/>
+                  <PaymentForm
+                    authenticatedUser={authenticatedUser!}
+                    orderId={order!.id}
+                    selectedProducts={selectedProducts}
+                    totalPrice={totalPrice}
+                  />
                 </Box>
               }
             </Transition>

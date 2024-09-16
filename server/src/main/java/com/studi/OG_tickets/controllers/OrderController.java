@@ -2,11 +2,14 @@ package com.studi.OG_tickets.controllers;
 
 
 import com.google.zxing.WriterException;
+import com.studi.OG_tickets.dto.CreatedOrderResponseDto;
 import com.studi.OG_tickets.dto.OrderDto;
 import com.studi.OG_tickets.dto.ProductDto;
 import com.studi.OG_tickets.exceptions.InternalServerException;
 import com.studi.OG_tickets.exceptions.NotFoundException;
+import com.studi.OG_tickets.models.Order;
 import com.studi.OG_tickets.models.UserEntity;
+import com.studi.OG_tickets.repository.OrderRepository;
 import com.studi.OG_tickets.repository.UserRepository;
 import com.studi.OG_tickets.services.OrderService;
 import lombok.AllArgsConstructor;
@@ -26,13 +29,14 @@ public class OrderController {
 
   private final OrderService orderService;
   private final UserRepository userRepository;
+  private final OrderRepository orderRepository;
 
   @PostMapping("/create/user/{userId}")
-  public ResponseEntity<OrderDto> createOrder(@PathVariable Long userId, @RequestBody OrderDto orderDto) {
+  public ResponseEntity<CreatedOrderResponseDto> createOrder(@PathVariable Long userId, @RequestBody OrderDto orderDto) {
     try {
       UserEntity user = userRepository.findById(userId)
               .orElseThrow(() -> new NotFoundException("User not found"));
-      OrderDto newOrder = orderService.createOrder(orderDto, user);
+      CreatedOrderResponseDto newOrder = orderService.createOrder(orderDto, user);
 
       return ResponseEntity.ok().body(newOrder);
     } catch (InternalServerException | IOException | WriterException e) {
@@ -40,7 +44,21 @@ public class OrderController {
     }
   }
 
-  @GetMapping("/{orderId}/qrcode")
+  @PutMapping("/validate/{orderId}/user/{userId}")
+  public ResponseEntity<CreatedOrderResponseDto> validateOrder(@PathVariable Long orderId, @PathVariable Long userId) {
+    try {
+      UserEntity user = userRepository.findById(userId)
+              .orElseThrow(() -> new NotFoundException("User not found"));
+      Order order = orderRepository.findById(orderId)
+              .orElseThrow(() -> new NotFoundException("Order not found"));
+      CreatedOrderResponseDto validatedOrder = orderService.validateOrder(order, user);
+      return ResponseEntity.ok().body(validatedOrder);
+    } catch (InternalServerException | IOException | WriterException e) {
+      throw new InternalServerException(e.getMessage(), e.getCause());
+    }
+  }
+
+  @GetMapping("/qrcode/{orderId}")
   public ResponseEntity<byte[]> getOrderQrCode(@PathVariable Long orderId) {
     try {
       OrderDto orderDto = orderService.getById(orderId);
