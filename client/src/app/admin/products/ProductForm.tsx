@@ -18,6 +18,7 @@ import {
 import Product, {FetchedProduct, ProductCategory} from "@/_objects/Product";
 import {cityList, sportsList, stageList, venueList} from "@/_helpers/constants";
 import {DatePickerInput, TimeInput} from "@mantine/dates";
+import dayjs from "dayjs";
 
 interface ProductFormProps {
   formValues: FetchedProduct | Product | undefined;
@@ -36,7 +37,6 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
       <IconClock style={{width: rem(16), height: rem(16)}} stroke={1.5}/>
     </ActionIcon>
   );
-  console.log(formValues);
 
   if (!formValues || isLoading) return null;
   return (
@@ -49,7 +49,7 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
         description: Yup.string(),
         price: Yup.number().required("Le prix est requis"),
         stock: Yup.number(),
-        city: Yup.string().required("La ville est requis"),
+        city: Yup.string().required("La ville est requise"),
         venue: Yup.string().required("Le lieu est requis"),
         stage: Yup.string().required("La phase est requise"),
         visible: Yup.boolean().required("Le statut est requis"),
@@ -67,60 +67,60 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
       {({values, handleChange, handleSubmit, errors, touched, setFieldValue}) => (
         <Form onSubmit={handleSubmit}>
           <Grid grow>
-            <Grid.Col span={{ base: 12, xs: 12, sm: 12, md: 12, lg: 8, xl: 7 }}>
+            <Grid.Col span={{base: 12, xs: 12, sm: 12, md: 12, lg: 8, xl: 7}}>
               <Paper px={"lg"} py={"md"} shadow='md' radius={'sm'}>
                 <Title order={3} mb={10}>Information</Title>
-                    <Select
-                      leftSection={<IconPingPong/>}
-                      name="name"
-                      label="Sport"
-                      placeholder={"Gymnastique"}
-                      value={values.name}
-                      data={sportsList}
-                      error={touched.name && errors.name}
-                      onChange={(val) => {
-                        setFieldValue(`name`, val);
-                        setFieldValue('image', `/pictograms/${val!.replace(/ /g, "-")}.avif`)
-                      }}
-                      style={{flex: 1}}
-                      clearable
-                      mb={10}
-                    />
-                    <Textarea
-                      name="description"
-                      label={"Description"}
-                      value={values.description}
-                      error={touched.description && errors.description}
-                      onChange={handleChange}
-                    />
+                <Select
+                  leftSection={<IconPingPong/>}
+                  name="name"
+                  label="Sport"
+                  placeholder={"Gymnastique"}
+                  value={values.name}
+                  data={sportsList}
+                  error={touched.name && errors.name}
+                  onChange={(val) => {
+                    setFieldValue(`name`, val);
+                    setFieldValue('image', `/pictograms/${val!.replace(/ /g, "-")}.avif`)
+                  }}
+                  style={{flex: 1}}
+                  clearable
+                  mb={10}
+                />
+                <Textarea
+                  name="description"
+                  label={"Description"}
+                  value={values.description}
+                  error={touched.description && errors.description}
+                  onChange={handleChange}
+                />
 
-                    <Group justify="flex-start" align="center" mt={"md"}>
-                      <Select
-                        leftSection={<IconTournament/>}
-                        name="stage"
-                        label="Étape"
-                        placeholder={"Tour préliminaires"}
-                        value={values.stage}
-                        data={stageList}
-                        error={touched.stage && errors.stage}
-                        onChange={(val) => setFieldValue(`stage`, val)}
-                        style={{flex: 1}}
-                        clearable
-                      />
-                      <Select
-                        leftSection={<IconUsers/>}
-                        name="category"
-                        label="Catégorie"
-                        placeholder={"DUO"}
-                        value={values.category}
-                        data={[ProductCategory.SOLO, ProductCategory.DUO, ProductCategory.FAMILY]}
-                        error={touched.category && errors.category}
-                        onChange={(val) => setFieldValue(`category`, val)}
-                        style={{flex: 1}}
-                        clearable
-                      />
+                <Group justify="flex-start" align="center" mt={"md"}>
+                  <Select
+                    leftSection={<IconTournament/>}
+                    name="stage"
+                    label="Étape"
+                    placeholder={"Tour préliminaires"}
+                    value={values.stage}
+                    data={stageList}
+                    error={touched.stage && errors.stage}
+                    onChange={(val) => setFieldValue(`stage`, val)}
+                    style={{flex: 1}}
+                    clearable
+                  />
+                  <Select
+                    leftSection={<IconUsers/>}
+                    name="category"
+                    label="Catégorie"
+                    placeholder={"DUO"}
+                    value={values.category}
+                    data={[ProductCategory.SOLO, ProductCategory.DUO, ProductCategory.FAMILY]}
+                    error={touched.category && errors.category}
+                    onChange={(val) => setFieldValue(`category`, val)}
+                    style={{flex: 1}}
+                    clearable
+                  />
 
-                    </Group>
+                </Group>
               </Paper>
 
               <Paper px={"lg"} py={"md"} shadow='md' radius={'sm'} mt={20}>
@@ -131,8 +131,8 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
                   leftSection={<IconCalendar/>}
                   leftSectionPointerEvents="none"
                   label={"Date"}
-                  value={new Date(values.date!)}
-                  onChange={(val) => setFieldValue("date", val)}
+                  value={dayjs(values.date!).toDate()}
+                  onChange={(val) => setFieldValue("date", dayjs(val).startOf("day").toDate())}
                 />
                 <Group justify="flex-start" align="center" mt={"md"}>
                   <TimeInput
@@ -141,7 +141,7 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
                     value={values.startTime}
                     ref={startClockRef}
                     leftSection={startTimeControl(startClockRef)}
-                    onChange={(e) =>  setFieldValue("startTime", e.target.value)}
+                    onChange={(e) => setFieldValue("startTime", e.target.value)}
                     style={{flex: 1}}
                   />
                   <TimeInput
@@ -150,7 +150,7 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
                     value={values.endTime}
                     ref={endClockRef}
                     leftSection={startTimeControl(endClockRef)}
-                    onChange={(e) =>  setFieldValue("endTime", e.target.value)}
+                    onChange={(e) => setFieldValue("endTime", e.target.value)}
                     style={{flex: 1}}
 
                   />
@@ -158,7 +158,10 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
               </Paper>
             </Grid.Col>
 
-            <Grid.Col span={{ base: 12, xs: 12, sm: 12, md: 12, lg: 4, xl: 5 }}>
+            <Grid.Col
+              span={{base: 12, xs: 12, sm: 12, md: 12, lg: 4, xl: 5}}
+              display={"flex"} style={{flexDirection: "column", justifyContent: "space-between"}}
+            >
               <Paper px={"lg"} py={"md"} shadow='md' radius={'sm'}>
                 <Title order={3} mb={10}>Statut</Title>
                 <Select

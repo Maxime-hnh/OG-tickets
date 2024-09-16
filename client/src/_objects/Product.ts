@@ -17,12 +17,13 @@ export type ProductProps = Partial<{
   venue: string;
   stage: string;
   visible: boolean;
-  date: string | null;
+  date: Date | null;
   startTime: string;
   endTime: string;
   category: ProductCategory;
 
   edit?: boolean;
+  quantity?: number;
 }>
 export type FetchedProduct = {
   id: number;
@@ -37,7 +38,8 @@ export default class Product implements ProductProps {
   city = "";
   venue =  "";
   stage = "";
-  date = null;
+  visible = true;
+  date = new Date();
   startTime = "";
   endTime = "";
   category = ProductCategory.DUO;

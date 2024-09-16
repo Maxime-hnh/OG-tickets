@@ -1,4 +1,4 @@
-import {Button, Input, Modal} from "@mantine/core";
+import {Button, Input, Modal, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import React, {useEffect, useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {
@@ -11,7 +11,7 @@ import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import {useRouter} from 'next/navigation';
 import {notifications} from "@mantine/notifications";
-import {IconCheck} from "@tabler/icons-react";
+import {IconCheck, IconLock, IconMail, IconSword} from "@tabler/icons-react";
 
 interface LoginButtonProps {
   grow?: boolean;
@@ -70,14 +70,14 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
 
 
       <Modal
-        title={"Connexion"}
+        centered
         opened={opened}
         onClose={close}
-        centered
         overlayProps={{
           backgroundOpacity: 0.55,
           blur: 3,
         }}
+        radius={"sm"}
       >
         <Formik
           initialValues={authenticationRequest}
@@ -97,34 +97,37 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
         >
           {({values, handleChange, handleSubmit, errors, touched}) => (
             <Form onSubmit={handleSubmit}>
-              <Input.Wrapper
-                label="Email"
-                error={touched.email && errors.email}
-                withAsterisk
-              >
-                <Input
-                  name={"email"}
-                  value={values.email}
-                  onChange={handleChange}
-                  placeholder="Input inside Input.Wrapper"
-                />
-              </Input.Wrapper>
+              <Title ta="center" className={"titleFont"} mb={30}>Connexion</Title>
 
-              <Input.Wrapper
-                label="Mot de passe"
-                error={touched.password && errors.password}
+              <Stack>
+              <TextInput
+                label="Email"
+                name="email"
+                value={values.email}
+                error={touched.email && errors.email}
+                onChange={handleChange}
+                inputWrapperOrder={['label', 'description', 'input', 'error']}
+                leftSection={<IconMail/>}
+                mb={10}
                 withAsterisk
-              >
-                <Input
-                  name={"password"}
-                  value={values.password}
-                  onChange={handleChange}
-                />
-              </Input.Wrapper>
+              />
+
+              <PasswordInput
+                withAsterisk
+                label="Mot de passe"
+                name="password"
+                value={values.password}
+                error={touched.password && errors.password}
+                onChange={handleChange}
+                inputWrapperOrder={['label', 'description', 'input', 'error']}
+                mb={10}
+                leftSection={<IconLock/>}
+              />
 
               <Button type={"submit"}>
                 Connexion
               </Button>
+              </Stack>
             </Form>
           )}
         </Formik>

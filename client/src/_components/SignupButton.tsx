@@ -132,7 +132,7 @@ const SignupButton = ({grow = false}: SignupButtonProps) => {
         >
           {({values, handleChange, handleSubmit, errors, touched, setFieldValue}) => (
 
-            !user && <Form className="is-relative" onSubmit={handleSubmit}>
+            !user && <Form onSubmit={handleSubmit}>
                 <Title ta="center" className={"titleFont"} mb={30}>Inscription</Title>
 
                 <Group mb={10} gap={"xs"} wrap={"nowrap"} align={"center"}>
@@ -236,7 +236,6 @@ const SignupButton = ({grow = false}: SignupButtonProps) => {
               <Title ta="center" className={"titleFont"}>Félicitations ! </Title>
               <Text ta={"center"}>Bienvenue {user?.firstName}, vous pouvez à présent vous connecter et réserver vos
                 tickets.</Text>
-              <Button>Se connecter</Button>
             </Stack>
           }
         </Transition>

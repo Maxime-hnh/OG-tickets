@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -101,6 +102,7 @@ public class ProductService {
               return matchingProduct.getPrice().multiply(BigDecimal.valueOf(productFromOrderDto.getQuantity()));
             })
             .reduce(BigDecimal.ZERO, BigDecimal::add);  //Cumulate amounts
+    totalCalculated = totalCalculated.setScale(2, RoundingMode.HALF_UP);
 
     // Compare totalCalculated to totalAmount
     if (totalCalculated.compareTo(totalAmount) != 0) {

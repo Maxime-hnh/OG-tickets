@@ -15,7 +15,7 @@ export class ApiError extends Error {
     Object.setPrototypeOf(this, ApiError.prototype);
   }
 }
-export async function handleResponse<TData = any>(response: Response): Promise<TData | TData[] > {
+export async function handleResponse<TData = any>(response: Response): Promise<any> {
   const text: string = await response.text();
   let data = text && JSON.parse(text);
 
