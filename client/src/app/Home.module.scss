@@ -1,0 +1,137 @@
+.hero {
+  position: relative;
+  background-image: url("/wallpaper-og.png");
+  background-size: cover;
+  background-position: center;
+  height: calc(100dvh - 59px);
+}
+
+.hero_container {
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-bottom: calc(var(--mantine-spacing-xl) * 6);
+  z-index: 1;
+  position: relative;
+
+  @media (max-width: 768px) {
+    height: 500px;
+    padding-bottom: calc(var(--mantine-spacing-xl) * 3);
+  }
+}
+
+.hero_title {
+  color: var(--mantine-color-white);
+  font-size: 60px;
+  font-weight: 900;
+  line-height: 1.1;
+
+  @media (max-width: 768px) {
+    font-size: 40px;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 576px) {
+    font-size: 28px;
+    line-height: 1.3;
+  }
+}
+
+.hero_description {
+  color: var(--mantine-color-white);
+  max-width: 600px;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    font-size: var(--mantine-font-size-sm);
+  }
+}
+
+.hero_button {
+  margin-top: calc(var(--mantine-spacing-xl) * 1.5);
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.article_card {
+  transition: transform 150ms ease,
+  box-shadow 150ms ease;
+
+  &:hover {
+    transform: scale(1.02) translateY(-10px);
+    box-shadow: var(--mantine-shadow-md);
+  }
+}
+
+.lottery_wrapper {
+  display: flex;
+  align-items: center;
+  height: 375px;
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+    padding: var(--mantine-spacing-xl);
+    height: auto;
+  }
+}
+
+
+.lottery_body {
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(15deg, #c74690, #6932a0);
+  color: #ffffff;
+  border-radius: 0.5rem 0 0 0.5rem;
+
+
+  @media (max-width: 768px) {
+    border-radius: 0 0 0.5rem 0.5rem;
+    width: 100%;
+    height: 50%;
+  }
+}
+
+.lottery_controls {
+  display: flex;
+  margin-top: var(--mantine-spacing-xl);
+}
+
+.lottery_inputWrapper {
+  width: 100%;
+  flex: 1;
+}
+
+.lottery_input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0;
+}
+
+.lottery_button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.lottery_container_image {
+  height: 100%;
+  width: 50%;
+
+  @media (max-width: 768px) {
+    height: 50%;
+    width: 100%;
+  }
+}
+
+.lottery_image {
+  height: 100%;
+  width: 100%;
+  border-radius: 0 0.5rem 0.5rem 0;
+
+  @media (max-width: 768px) {
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+}
