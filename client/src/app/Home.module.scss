@@ -1,9 +1,9 @@
 .hero {
   position: relative;
-  background-image: url("/wallpaper-og.png");
+  background-image: url("/hero_wallpaper.png");
   background-size: cover;
   background-position: center;
-  height: calc(100dvh - 59px);
+  height: calc(100vh - 59px);
 }
 
 .hero_container {
@@ -133,5 +133,34 @@
 
   @media (max-width: 768px) {
     border-radius: 0.5rem 0.5rem 0 0;
+  }
+}
+
+.intro_img_container {
+  overflow: visible;
+}
+
+.intro_img_container:hover .intro_img {
+  transform: scale(1.03);
+}
+
+.intro_img {
+  transition: transform 300ms ease;
+}
+
+.intro_text_container {
+  transition: transform 300ms ease;
+}
+
+.intro_text_container:hover {
+  transform: scale(1.01) translateY(-10px);
+}
+.control {
+
+  border: 1px solid #000000;
+
+  &[data-inactive] {
+    opacity: 0;
+    cursor: default;
   }
 }

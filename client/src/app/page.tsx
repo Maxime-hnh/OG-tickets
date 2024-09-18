@@ -13,12 +13,19 @@ import {
   TextInput,
   Paper,
   Box,
-  Stack
+  Stack,
+  Group, rem,
+  Flex
 } from "@mantine/core";
 import styles from "./Home.module.scss"
-import { IconAt } from "@tabler/icons-react";
+import {IconAt} from "@tabler/icons-react";
+import {Carousel} from '@mantine/carousel';
+import {colors} from "@/_helpers/colors";
+import useWindowSize from "@/_components/Utils/useWindowSize";
 
 export default function Home() {
+
+  const {width} = useWindowSize();
 
   const articleCardData = [
     {
@@ -35,6 +42,48 @@ export default function Home() {
       title: "Les frères obtiennent la bronze au tennis de table",
       image: "./articleCard_tableTennis.webp",
       date: "04 août 2024"
+    },
+  ]
+
+  const carouselData = [
+    {
+      title: "Judo",
+      color: colors.og_red_2,
+      image: "./intro_judo.webp",
+      date: "08/08/20204",
+      description: "  L'épreuve de natation des Jeux Olympiques est un spectacle de vitesse, de force et de grâce, attirant\n" +
+        "                des\n" +
+        "                nageurs du monde entier pour concourir dans ce qui est souvent considéré comme le joyau de la couronne\n" +
+        "                des\n" +
+        "                Jeux. Les compétiteurs s'affrontent dans une variété de styles, incluant le crawl, le dos, la brasse, et\n" +
+        "                le\n" +
+        "                papillon, offrant un véritable festin visuel de technique et d'endurance."
+    },
+    {
+      title: "Natation",
+      color: colors.og_blue,
+      image: "./intro_swim.webp",
+      date: "07/08/20204",
+      description: "  L'épreuve de natation des Jeux Olympiques est un spectacle de vitesse, de force et de grâce, attirant\n" +
+        "                des\n" +
+        "                nageurs du monde entier pour concourir dans ce qui est souvent considéré comme le joyau de la couronne\n" +
+        "                des\n" +
+        "                Jeux. Les compétiteurs s'affrontent dans une variété de styles, incluant le crawl, le dos, la brasse, et\n" +
+        "                le\n" +
+        "                papillon, offrant un véritable festin visuel de technique et d'endurance."
+    },
+    {
+      title: "BMX",
+      color: colors.og_green_3,
+      image: "./intro_bmx.webp",
+      date: "10/08/20204",
+      description: "  L'épreuve de natation des Jeux Olympiques est un spectacle de vitesse, de force et de grâce, attirant\n" +
+        "                des\n" +
+        "                nageurs du monde entier pour concourir dans ce qui est souvent considéré comme le joyau de la couronne\n" +
+        "                des\n" +
+        "                Jeux. Les compétiteurs s'affrontent dans une variété de styles, incluant le crawl, le dos, la brasse, et\n" +
+        "                le\n" +
+        "                papillon, offrant un véritable festin visuel de technique et d'endurance."
     },
   ]
 
@@ -65,6 +114,7 @@ export default function Home() {
         <Title fz={40} className={"titleFont"}>Actualité de Paris 2024</Title>
         <Divider c={"dark"} my={20}/>
         <SimpleGrid cols={{base: 1, sm: 2, lg: 3}}>
+
           {articleCardData.map(article => (
             <Card key={article.title} p="md" radius="md" component="a" href="#" className={styles.article_card}>
               <AspectRatio ratio={1920 / 1080}>
@@ -78,6 +128,7 @@ export default function Home() {
               </Text>
             </Card>
           ))}
+
         </SimpleGrid>
       </Container>
 
@@ -114,8 +165,43 @@ export default function Home() {
 
       <Container py={"xl"} px={{base: 10, sm: 40, xl: 75}} m={0} miw={"100%"} w={'100%'}>
         <Title fz={40} className={"titleFont"}>Épreuves de Paris 2024</Title>
-        <Divider c={"dark"} my={20}/>
+        <Divider c={"dark"} mt={20} mb={30}/>
+        <Carousel
+          slideSize={{base: '100%', sm: '100%'}}
+          slideGap={{base: rem(2), sm: 'xl'}}
+          align="start"
+          slidesToScroll={1}
+          classNames={styles}
+        >
+          {carouselData.map((item) => (
+            <Carousel.Slide key={item.title}>
+              <Paper w={{base: "100%", md: "85%", xl: "70%"}} m={"auto"}>
+                <Flex wrap={"nowrap"} direction={{base: "column", md: "row"}} gap={"sm"} align={"center"}>
+                  <AspectRatio ratio={width < 992 ? 1920 / 1080 : 3 / 4} className={styles.intro_img_container}>
+                    <Image w={400} src={item.image} radius={"sm"} className={styles.intro_img}/>
+                  </AspectRatio>
+                  <Paper h={{base: "100%", md: "50%"}} shadow={"md"} p={"xl"} className={styles.intro_text_container}>
+                    <Stack align={"flex-start"}>
+                      <Stack gap={0}>
+                        <Title fz={40} className={"titleFont"} c={item.color}>{item.title}</Title>
+                        <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
+                          {`Date de la finale : ${item.date}`}
+                        </Text>
+                      </Stack>
+                      <Text ta={"justify"}>
+                        {item.description}
+                      </Text>
+                    </Stack>
+                  </Paper>
+                </Flex>
+              </Paper>
+            </Carousel.Slide>
+          ))}
+
+        </Carousel>
+
       </Container>
+
     </div>
 
   );
