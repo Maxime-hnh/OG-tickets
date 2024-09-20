@@ -1,11 +1,5 @@
-"use client"
-import {Container} from "@mantine/core";
+import dynamic from "next/dynamic";
 
-const AdminPage = () => {
-  return (
-    <Container>
-<p>admin page</p>
-    </Container>
-  )
-}
+const AdminPage = dynamic(() => import('./pageContent'), {ssr: false});
+
 export default AdminPage;
