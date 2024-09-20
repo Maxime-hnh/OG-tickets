@@ -14,7 +14,7 @@ import {
   Paper,
   Box,
   Stack,
-  Group, rem,
+  rem,
   Flex
 } from "@mantine/core";
 import styles from "./Home.module.scss"
