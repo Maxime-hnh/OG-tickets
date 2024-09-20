@@ -3,11 +3,11 @@ import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
 import Product, {FetchedProduct} from "@/_objects/Product";
 import {productService} from "@/_services/product.service";
 import {Button, Container, SimpleGrid} from "@mantine/core";
-import ProductCard from "@/app/admin/products/ProductCard";
+import ProductCard from "@/app/admin/products/components/ProductCard";
 import CustomDrawer from "@/_components/CustomDrawer";
 import {notifications} from "@mantine/notifications";
 import {IconCheck} from "@tabler/icons-react";
-import ProductForm from "@/app/admin/products/ProductForm";
+import ProductForm from "@/app/admin/products/components/ProductForm";
 
 const ProductsPage = () => {
 
@@ -19,13 +19,13 @@ const ProductsPage = () => {
 
   const getProducts = async () => {
     try {
-    setIsLoading(true);
-    const data = await productService.getProducts();
-    if (data) setProducts(data as FetchedProduct[]);
+      setIsLoading(true);
+      const data = await productService.getProducts();
+      if (data) setProducts(data as FetchedProduct[]);
     } catch(e) {
       console.error(e)
     } finally {
-    setIsLoading(false);
+      setIsLoading(false);
     }
   };
 

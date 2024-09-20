@@ -23,7 +23,7 @@ import {Carousel} from '@mantine/carousel';
 import {colors} from "@/_helpers/colors";
 import useWindowSize from "@/_components/Utils/useWindowSize";
 
-export default function Home() {
+const HomePage = () => {
 
   const {width} = useWindowSize();
 
@@ -99,7 +99,8 @@ export default function Home() {
         <Container className={styles.hero_container} size="md">
           <Title className={styles.hero_title}>Bienvenue aux Jeux Olympique de Paris 2024</Title>
           <Text ta={"justify"} className={styles.hero_description} size="xl" mt="xl">
-            Ne manquez pas cette opportunité unique de vivre les Jeux Olympiques dans la ville lumière, où l&apos;histoire et
+            Ne manquez pas cette opportunité unique de vivre les Jeux Olympiques dans la ville lumière, où
+            l&apos;histoire et
             la modernité se rencontrent pour créer une expérience olympique inégalée.
           </Text>
 
@@ -206,3 +207,5 @@ export default function Home() {
 
   );
 };
+
+export default HomePage;

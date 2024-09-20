@@ -1,12 +1,12 @@
 "use client"
-import {Box, Button, Divider, Group, Image, ScrollArea, Stack, Stepper, Text, Title, Transition} from "@mantine/core";
+import {Box, Button, Divider, Group, ScrollArea, Stack, Text, Title, Transition} from "@mantine/core";
 import React, {useEffect, useState} from "react";
 import {FetchedProduct} from "@/_objects/Product";
 import {productService} from "@/_services/product.service";
-import ShopCard from "@/app/shop/ShopCard";
+import ShopCard from "@/app/shop/components/ShopCard";
 import {IconCheck, IconChevronRight, IconShoppingCart, IconShoppingCartCopy} from "@tabler/icons-react";
 import CustomLoading from "@/_components/CustomLoading";
-import styles from './ShopPage.module.scss';
+import styles from './styles/ShopPage.module.scss';
 import {AuthenticatedUser, AuthenticationRequest, authenticationService} from "@/_services/authentication.service";
 import Order, {FetchedOrder, SelectedProducts} from "@/_objects/Order";
 import {orderService} from "@/_services/order.service";
@@ -14,7 +14,7 @@ import LoginForm from "@/_components/LoginForm";
 import {notifications} from "@mantine/notifications";
 import PaymentForm from "@/_components/PaymentForm";
 
-const ProductsPage = () => {
+const ShopPage = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<FetchedProduct[]>([]);
@@ -203,4 +203,4 @@ const ProductsPage = () => {
   )
 }
 
-export default ProductsPage;
+export default ShopPage;
