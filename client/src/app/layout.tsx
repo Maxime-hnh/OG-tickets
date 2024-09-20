@@ -11,14 +11,14 @@ import {
   MantineProvider, Text
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import React, {useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import useWindowSize from "@/_components/Utils/useWindowSize";
 import {MOBILE_SIZE} from "@/_helpers/constants";
 import AppContext from "./Context/AppContext";
 import AdminLayout from "@/_components/Layouts/AdminLayout";
 import RootLayout from "@/_components/Layouts/RootLayout";
-import { usePathname } from "next/navigation";
-import { Notifications } from '@mantine/notifications';
+import {usePathname} from "next/navigation";
+import {Notifications} from '@mantine/notifications';
 import dayjs from "dayjs";
 import 'dayjs/locale/fr';
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -30,12 +30,12 @@ const themeMantine = createTheme({
   autoContrast: true
 });
 
-export default function Layout({children}: Readonly<{ children: React.ReactNode; }>) {
+const Layout = ({children}: Readonly<{ children: React.ReactNode; }>) => {
 
   dayjs.extend(customParseFormat);
 
   const [opened, {toggle}] = useDisclosure();
-  const { width } = useWindowSize();
+  const {width} = useWindowSize();
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith('/admin');
@@ -59,10 +59,14 @@ export default function Layout({children}: Readonly<{ children: React.ReactNode;
       <AppContext.Provider value={{
         isMobile
       }}>
-        <Notifications />
+        <Notifications/>
         {isAdminRoute
-        ? <AdminLayout children={children} opened={opened} toggle={toggle}/>
-          : <RootLayout opened={opened} toggle={toggle} children={children}/>
+          ? <AdminLayout opened={opened} toggle={toggle}>
+            {children}
+          </AdminLayout>
+          : <RootLayout opened={opened} toggle={toggle}>
+            {children}
+          </RootLayout>
         }
       </AppContext.Provider>
     </MantineProvider>
@@ -70,3 +74,5 @@ export default function Layout({children}: Readonly<{ children: React.ReactNode;
     </html>
   );
 }
+export default Layout;
+

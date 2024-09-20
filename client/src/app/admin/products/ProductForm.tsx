@@ -239,5 +239,5 @@ const ProductForm = forwardRef(({formValues, handleSubmitForm}: ProductFormProps
     </Formik>
   );
 });
-
+ProductForm.displayName = "ProductForm";
 export default ProductForm;

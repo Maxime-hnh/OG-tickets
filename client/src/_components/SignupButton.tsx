@@ -84,7 +84,7 @@ const SignupButton = ({grow = false}: SignupButtonProps) => {
         onClick={open}
         style={{flex: grow ? 1 : ""}}
       >
-        S'inscrire
+        S&apos;inscrire
       </Button>
       <Modal
         centered
@@ -218,7 +218,7 @@ const SignupButton = ({grow = false}: SignupButtonProps) => {
                         radius={"sm"}
                         loading={isLoading}
                     >
-                        Je m'inscris
+                        Je m&apos;inscris
                     </Button>
                 </Group>
             </Form>

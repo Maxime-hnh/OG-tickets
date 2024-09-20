@@ -78,11 +78,13 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
 
               <Group justify={"center"} align={"center"}>
                   <Image
+                      alt={"logo mastercard"}
                       src={"./mastercard.svg"}
                       width={50}
                       height={50}
                   />
                   <Image
+                      alt={"logo visa"}
                       src={"./visa.svg"}
                       width={40}
                       height={40}
@@ -218,6 +220,7 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
             <Group align={"center"}>
               <Text>QR code :</Text>
               <Image
+                alt={"QrCode"}
                 src={qrCodeUrl}
                 w={100}
                 h={100}

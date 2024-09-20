@@ -126,7 +126,7 @@ const FooterLayout = () => {
               href={"/"}
               onClick={(event) => event.preventDefault()}
             >
-              Conditions d'utilisations
+              Conditions d&apos;utilisations
             </Text>
           </Group>
         </Stack>

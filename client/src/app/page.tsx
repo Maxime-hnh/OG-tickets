@@ -99,7 +99,7 @@ export default function Home() {
         <Container className={styles.hero_container} size="md">
           <Title className={styles.hero_title}>Bienvenue aux Jeux Olympique de Paris 2024</Title>
           <Text ta={"justify"} className={styles.hero_description} size="xl" mt="xl">
-            Ne manquez pas cette opportunité unique de vivre les Jeux Olympiques dans la ville lumière, où l'histoire et
+            Ne manquez pas cette opportunité unique de vivre les Jeux Olympiques dans la ville lumière, où l&apos;histoire et
             la modernité se rencontrent pour créer une expérience olympique inégalée.
           </Text>
 
@@ -132,17 +132,17 @@ export default function Home() {
         </SimpleGrid>
       </Container>
 
-      <Container py={"xl"} px={{base: 10, sm: 40, xl: 75}} m={0} miw={"100%"} w={'100%'}>
+      <Container py={"xl"} px={{base: 10, sm: 40, xl: 75}}>
         <Paper radius={"md"} className={styles.lottery_wrapper}>
-          <Box p={"xl"} className={styles.lottery_body}>
+          <Box p={{base: "lg", md: "xl"}} className={styles.lottery_body}>
             <Stack h={"100%"} justify={"space-evenly"}>
               <div>
-
-                <Title mb={10} fz={45} className={"titleFont"}>Tentez votre chance ! 🎁</Title>
-                <Text fw={500} fz="xl" mb={10}>
+                <Title mb={10} fz={{base: 30, sm: 45}} className={"titleFont"}>Tentez votre chance !
+                  🎁</Title>
+                <Text fw={500} fz={{base: "md", sm: "xl"}} mb={{base: 5, sm: 10}}>
                   Remportez une place pour la finale de judo.
                 </Text>
-                <Text fz="sm" c="white">
+                <Text fz="sm" c="white" ta={"justify"}>
                   Renseignez votre adresse mail et participez à la lotterie qui aura lieu le mardi 06 août 2024.
                 </Text>
               </div>
