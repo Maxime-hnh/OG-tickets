@@ -1,4 +1,3 @@
-version: "3"
 services:
   app:
     image: "og-tickets:v0.9"
@@ -24,7 +23,6 @@ services:
       - POSTGRES_DB=OG-Tickets
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - ALLOW_IP_RANGE=0.0.0.0/0
     ports:
       - "5432:5432"
     networks:
