@@ -8,10 +8,9 @@ import java.util.Base64;
 
 public class SecurityConstants {
 
-  private static final Dotenv dotenv = Dotenv.configure().directory("server").load();
+  //  private static final Dotenv dotenv = Dotenv.configure().directory("server").load();
+  private static final Dotenv dotenv = Dotenv.load();
   private static final String SECRET_KEY = dotenv.get("JWT_SECRET_KEY");
 
   public static final SecretKey JWT_SECRET = Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
-
-
 }
