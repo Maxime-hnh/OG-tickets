@@ -10,7 +10,7 @@ services:
     networks:
       - datalink
     environment:
-      - PG_DB=OG-Tickets
+      - PG_DB=og-tickets
       - PG_USER=postgres
       - PG_PASSWORD=postgres
       - PG_HOST=db
@@ -20,7 +20,7 @@ services:
   db:
     image: postgres:latest
     environment:
-      - POSTGRES_DB=OG-Tickets
+      - POSTGRES_DB=og-tickets
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
