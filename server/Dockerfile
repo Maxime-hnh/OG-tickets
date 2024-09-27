@@ -11,8 +11,8 @@ RUN mvn -f /home/app/pom.xml clean package -DskipTests
 # Utiliser une image Java pour exécuter l'application
 FROM tomcat:10-jdk17-openjdk-slim
 
-# Copier le fichier WAR du stage de construction dans le dossier de déploiement de Tomcat
-COPY --from=build /home/app/target/*.war /usr/local/tomcat/webapps/
+# Copier le fichier WAR généré du stage de construction dans le dossier de déploiement de Tomcat
+COPY --from=build /home/app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 
 # Configurer le port sur lequel Tomcat va écouter
 EXPOSE 8080
