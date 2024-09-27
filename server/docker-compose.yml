@@ -3,36 +3,36 @@ services:
     image: "og-tickets:v0.9"
     build:
       context: .
-    depends_on:
-      - db
+#    depends_on:
+#      - db
     ports:
       - "8080:8080"
-    networks:
-      - datalink
+#    networks:
+#      - datalink
     environment:
-      - PG_DB=og-tickets
-      - PG_USER=postgres
-      - PG_PASSWORD=postgres
-      - PG_HOST=db
-      - PG_PORT=5432
+      - PG_DB=${PG_DB}
+      - PG_USER=${PG_USER}
+      - PG_PASSWORD=${PG_PASSWORD}
+      - PG_HOST=${PG_HOST}
+      - PG_PORT=${PG_PORT}
       - URL_SITE=https://og-tickets.netlify.app/
 
-  db:
-    image: postgres:latest
-    environment:
-      - POSTGRES_DB=og-tickets
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - "5432:5432"
-    networks:
-      - datalink
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-networks:
-  datalink:
-    driver: bridge
-
-volumes:
-  postgres_data:
+#  db:
+#    image: postgres:latest
+#    environment:
+#      - POSTGRES_DB=og-tickets
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+#    ports:
+#      - "5432:5432"
+#    networks:
+#      - datalink
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#
+#networks:
+#  datalink:
+#    driver: bridge
+#
+#volumes:
+#  postgres_data:
