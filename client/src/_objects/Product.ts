@@ -23,6 +23,7 @@ export type ProductProps = Partial<{
   category: ProductCategory;
 
   edit?: boolean;
+  quantity?:number;
   quantitySold?: number;
 }>
 export type FetchedProduct = {
