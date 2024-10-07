@@ -6,7 +6,6 @@ import {
 import {useMemo} from 'react';
 import {FetchedProduct} from "@/_objects/Product";
 import {MRT_Localization_FR} from 'mantine-react-table/locales/fr/index.cjs';
-import {getCoreRowModel} from "@tanstack/table-core";
 
 interface ProductsTableProps {
   products: FetchedProduct[];
@@ -47,7 +46,6 @@ const ProductsTable = ({products, isLoading}: ProductsTableProps) => {
   const table = useMantineReactTable({
     columns,
     data: products,
-    getCoreRowModel: getCoreRowModel(),
     localization: MRT_Localization_FR,
     enableEditing: false,
     enableRowActions: false,
