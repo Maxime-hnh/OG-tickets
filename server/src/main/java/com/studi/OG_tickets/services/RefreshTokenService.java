@@ -6,6 +6,8 @@ import com.studi.OG_tickets.repository.RefreshTokenRepository;
 import com.studi.OG_tickets.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Calendar;
@@ -37,6 +39,7 @@ public class RefreshTokenService {
     return userOptional.flatMap(refreshTokenRepository::findByUserInfo);
   }
 
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void cleanUpExpiredToken(RefreshToken refreshToken) {
     refreshTokenRepository.delete(refreshToken);
   }
@@ -44,10 +47,10 @@ public class RefreshTokenService {
   public Boolean isTokenExpired(RefreshToken refreshToken) {
     return refreshToken.getExpiryDate().isBefore(Instant.now());
   }
+
   public RefreshToken verifyExpiration(RefreshToken refreshToken) {
     if (this.isTokenExpired(refreshToken)) {
-      this.cleanUpExpiredToken(refreshToken);
-      throw new RuntimeException(refreshToken.getToken() + " Refresh token is expired, please make a new login.");
+      throw new RuntimeException(" Refresh token is expired, please make a new login.");
     }
     return refreshToken;
   }

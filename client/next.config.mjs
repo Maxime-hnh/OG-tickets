@@ -12,3 +12,6 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
+//'http://57.128.86.34:8080/api/:path*'
+//'http://localhost:8080/api/:path*'

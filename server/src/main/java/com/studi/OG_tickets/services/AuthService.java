@@ -70,6 +70,7 @@ public class AuthService {
     RefreshToken refreshTokenResponse;
     if (existingRefreshToken.isEmpty() || refreshTokenService.isTokenExpired(existingRefreshToken.get())) {
       existingRefreshToken.ifPresent(refreshTokenService::cleanUpExpiredToken);
+
       refreshTokenResponse = refreshTokenService.createRefreshToken(loginDto.getEmail());
     } else {
       refreshTokenResponse = existingRefreshToken.get();
