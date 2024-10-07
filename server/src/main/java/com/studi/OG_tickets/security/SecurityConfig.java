@@ -34,6 +34,7 @@ public class SecurityConfig {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .securityMatcher("/**")
             .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers( "/api/auth/login", "/api/auth/refreshToken").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/product/create").hasAuthority("ADMIN")
                     .requestMatchers(HttpMethod.PUT,"/api/product/{id}").hasAuthority("ADMIN")
