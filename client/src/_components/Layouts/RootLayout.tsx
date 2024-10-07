@@ -7,7 +7,6 @@ import {
   AppShellHeader,
   AppShellMain,
   AppShellNavbar, AppShellSection, Divider,
-  Text
 } from '@mantine/core';
 import {AppShell, Burger, Group, Image} from '@mantine/core';
 import React from "react";

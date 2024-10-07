@@ -23,7 +23,7 @@ export type ProductProps = Partial<{
   category: ProductCategory;
 
   edit?: boolean;
-  quantity?: number;
+  quantitySold?: number;
 }>
 export type FetchedProduct = {
   id: number;
@@ -36,7 +36,7 @@ export default class Product implements ProductProps {
   price = 0;
   stock = 1000;
   city = "";
-  venue =  "";
+  venue = "";
   stage = "";
   visible = true;
   date = new Date();

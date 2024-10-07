@@ -11,7 +11,7 @@ import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import {useRouter} from 'next/navigation';
 import {notifications} from "@mantine/notifications";
-import {IconCheck, IconLock, IconMail, IconSword} from "@tabler/icons-react";
+import {IconCheck, IconForbid, IconLock, IconMail} from "@tabler/icons-react";
 
 interface LoginButtonProps {
   grow?: boolean;
@@ -88,10 +88,20 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
           })
           }
           onSubmit={async (values) => {
-            const loggedUser = await authenticationService.login(values)
-            if (loggedUser) {
-              close();
-              redirectUser(loggedUser)
+            try {
+              const loggedUser = await authenticationService.login(values)
+              if (loggedUser) {
+                close();
+                redirectUser(loggedUser)
+              }
+            } catch (e) {
+              notifications.show({
+                icon: <IconForbid/>,
+                color: "red",
+                position: "bottom-center",
+                title: "Erreur de connexion",
+                message: `Une erreur est survenue ${e}`
+              })
             }
           }}
         >
@@ -100,33 +110,33 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
               <Title ta="center" className={"titleFont"} mb={30}>Connexion</Title>
 
               <Stack>
-              <TextInput
-                label="Email"
-                name="email"
-                value={values.email}
-                error={touched.email && errors.email}
-                onChange={handleChange}
-                inputWrapperOrder={['label', 'description', 'input', 'error']}
-                leftSection={<IconMail/>}
-                mb={10}
-                withAsterisk
-              />
+                <TextInput
+                  label="Email"
+                  name="email"
+                  value={values.email}
+                  error={touched.email && errors.email}
+                  onChange={handleChange}
+                  inputWrapperOrder={['label', 'description', 'input', 'error']}
+                  leftSection={<IconMail/>}
+                  mb={10}
+                  withAsterisk
+                />
 
-              <PasswordInput
-                withAsterisk
-                label="Mot de passe"
-                name="password"
-                value={values.password}
-                error={touched.password && errors.password}
-                onChange={handleChange}
-                inputWrapperOrder={['label', 'description', 'input', 'error']}
-                mb={10}
-                leftSection={<IconLock/>}
-              />
+                <PasswordInput
+                  withAsterisk
+                  label="Mot de passe"
+                  name="password"
+                  value={values.password}
+                  error={touched.password && errors.password}
+                  onChange={handleChange}
+                  inputWrapperOrder={['label', 'description', 'input', 'error']}
+                  mb={10}
+                  leftSection={<IconLock/>}
+                />
 
-              <Button type={"submit"}>
-                Connexion
-              </Button>
+                <Button type={"submit"}>
+                  Connexion
+                </Button>
               </Stack>
             </Form>
           )}

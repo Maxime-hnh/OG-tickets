@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {AppShell, Burger, Group, Image, NavLink, Skeleton} from "@mantine/core";
+import React, {useState} from "react";
+import {AppShell, Burger, Group, Image, NavLink} from "@mantine/core";
 import {IconBuildingStore, IconHome2, IconLogout, IconSettings} from "@tabler/icons-react";
 import {usePathname} from "next/navigation";
-import Link from "next/link";
 import {colors} from "@/_helpers/colors";
 import AdminContext from "@/app/Context/AdminContext";
 import {AuthenticatedUser, authenticationService} from "@/_services/authentication.service";
@@ -32,27 +31,27 @@ const AdminLayout = ({children, opened, toggle}: AdminLayoutProps) => {
       authenticatedUser,
       userInfo
     }}>
-    <AppShell
-      header={{height: 60}}
-      navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
-      padding="md"
-    >
-      <AppShell.Header bg={colors.og_green_3}>
-        <Group h="100%" px="md">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
-          <Image
-            radius={'xs'}
-            w={"48px"}
-            src="/logo_OG.svg"
-            alt="logo"
-          />
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar p="md">
-        {navData.map((item, index) => (
-          <Link href={item.path} key={index} passHref>
+      <AppShell
+        header={{height: 60}}
+        navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
+        padding="md"
+      >
+        <AppShell.Header bg={colors.og_green_3}>
+          <Group h="100%" px="md">
+            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
+            <Image
+              radius={'xs'}
+              w={"48px"}
+              src="/logo_OG.svg"
+              alt="logo"
+            />
+          </Group>
+        </AppShell.Header>
+        <AppShell.Navbar p="md">
+          {navData.map((item, index) => (
             <NavLink
-
+              key={index}
+              href={item.path}
               color={colors.og_green}
               variant="light"
               label={item.label}
@@ -62,11 +61,10 @@ const AdminLayout = ({children, opened, toggle}: AdminLayoutProps) => {
                 label: {fontSize: "1rem"},
               }}
             />
-          </Link>
-        ))}
-      </AppShell.Navbar>
-      <AppShell.Main>{children}</AppShell.Main>
-    </AppShell>
+          ))}
+        </AppShell.Navbar>
+        <AppShell.Main>{children}</AppShell.Main>
+      </AppShell>
     </AdminContext.Provider>
   )
 }
