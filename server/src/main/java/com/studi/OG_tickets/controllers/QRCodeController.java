@@ -39,7 +39,7 @@ public class QRCodeController {
               .orElseThrow(() -> new IllegalArgumentException("⛔ Order not found"));
 
       return ResponseEntity.ok(
-              "✅ QR Code Ok. User : " + user.getFirstName() + " " + user.getLastName() +
+              "Client : " + user.getFirstName() + " " + user.getLastName() +
               ", Date d'achat : " + order.getCreatedAt());
 
     } catch (Exception e) {

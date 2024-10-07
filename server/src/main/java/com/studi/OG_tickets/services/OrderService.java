@@ -3,6 +3,7 @@ package com.studi.OG_tickets.services;
 import com.google.zxing.WriterException;
 import com.studi.OG_tickets.dto.CreatedOrderResponseDto;
 import com.studi.OG_tickets.dto.OrderDto;
+import com.studi.OG_tickets.dto.OrderWithUserDto;
 import com.studi.OG_tickets.exceptions.NotFoundException;
 import com.studi.OG_tickets.mappers.OrderMapper;
 import com.studi.OG_tickets.models.Order;
@@ -81,6 +82,14 @@ public class OrderService {
       throw new NotFoundException("No orders found");
     }
     return orders.stream().map(OrderMapper::toDto).collect(Collectors.toList());
+  }
+
+  public List<OrderWithUserDto> getAllWithUserInfo() {
+    List<Order> orders = orderRepository.findAllAndFetchUserEagerly();
+    if (orders.isEmpty()) {
+      throw new NotFoundException("No orders found");
+    }
+    return orders.stream().map(OrderMapper::toDtoWithUser).collect(Collectors.toList());
   }
 
   private String generateInvoiceNumber() {

@@ -4,7 +4,7 @@ package com.studi.OG_tickets.controllers;
 import com.google.zxing.WriterException;
 import com.studi.OG_tickets.dto.CreatedOrderResponseDto;
 import com.studi.OG_tickets.dto.OrderDto;
-import com.studi.OG_tickets.dto.ProductDto;
+import com.studi.OG_tickets.dto.OrderWithUserDto;
 import com.studi.OG_tickets.exceptions.InternalServerException;
 import com.studi.OG_tickets.exceptions.NotFoundException;
 import com.studi.OG_tickets.models.Order;
@@ -84,10 +84,20 @@ public class OrderController {
   }
 
   @GetMapping("/all")
-  public ResponseEntity<List<OrderDto>> getAllProducts() {
+  public ResponseEntity<List<OrderDto>> getAllOrders() {
     try {
       List<OrderDto> ordersDto = orderService.getAllOrders();
       return ResponseEntity.ok(ordersDto);
+    } catch (NotFoundException e) {
+      throw new NotFoundException(e.getMessage());
+    }
+  }
+
+  @GetMapping("/allWithUser")
+  public ResponseEntity<List<OrderWithUserDto>> getAllOrdersWithUser() {
+    try {
+      List<OrderWithUserDto> ordersWithUserDto = orderService.getAllWithUserInfo();
+      return ResponseEntity.ok(ordersWithUserDto);
     } catch (NotFoundException e) {
       throw new NotFoundException(e.getMessage());
     }

@@ -5,39 +5,71 @@ import {FetchedProduct} from "@/_objects/Product";
 import {useEffect, useState} from "react";
 import {productService} from "@/_services/product.service";
 import {IconCoins, IconUsers} from "@tabler/icons-react";
+import {FetchedOrder} from "@/_objects/Order";
+import {orderService} from "@/_services/order.service";
+import OrdersTable from "@/app/admin/OrdersTable";
 
 const AdminPageContent = () => {
 
-  const [products, setProducts] = useState<FetchedProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [products, setProducts] = useState<FetchedProduct[]>([]);
+  const [orders, setOrders] = useState<FetchedOrder[]>([]);
+  const [showProducts, setShowProducts] = useState<boolean>(true);
 
   const getProducts = async () => {
     setIsLoading(true);
     const data = await productService.getProducts();
     if (data) {
-      setProducts(data as FetchedProduct[])
+      setProducts(data)
     }
     setIsLoading(false);
-  }
+  };
+
+  const getOrders = async () => {
+    setIsLoading(true);
+    const data = await orderService.getAll();
+    if (data) {
+      setOrders(data)
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    getProducts()
+    getProducts();
+    getOrders();
   }, []);
 
   return (
     <div>
-      <Group>
+      <Group mb={10}>
         <Button
+          variant={showProducts ? "filled" : "outline"}
           leftSection={<IconCoins/>}
-        >Tableau des ventes</Button>
+          onClick={() => setShowProducts(true)}
+        >
+          Tableau des ventes
+        </Button>
+
         <Button
-          variant="light"
+          variant={!showProducts ? "filled" : "outline"}
           leftSection={<IconUsers/>}
-        >Tableau client</Button>
+          onClick={() => setShowProducts(false)}
+        >
+          Tableau client
+        </Button>
       </Group>
-      <ProductsTable
-        products={products}
-        isLoading={isLoading}
-      />
+
+      {showProducts
+        ? <ProductsTable
+          products={products}
+          isLoading={isLoading}
+        />
+        : <OrdersTable
+          orders={orders}
+          isLoading={isLoading}
+        />
+      }
+
     </div>
   )
 }

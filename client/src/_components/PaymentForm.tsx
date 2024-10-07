@@ -54,7 +54,7 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
       const validatedOrder = await orderService.validateOrder(orderId, authenticatedUser.id);
       if (validatedOrder) {
         setValidatedOrder(validatedOrder);
-        const qrCodeBlob = await orderService.getQrCode(27);
+        const qrCodeBlob = await orderService.getQrCode(orderId);
         if (qrCodeBlob) {
           const qrCodeUrl = URL.createObjectURL(qrCodeBlob);
           setQrCodeUrl(qrCodeUrl);

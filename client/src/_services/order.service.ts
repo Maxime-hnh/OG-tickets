@@ -1,7 +1,6 @@
 import {authHeader} from "@/_helpers/auth-header";
 import {handleResponse} from "@/_helpers/handle-response";
 import {FetchedOrder, OrderProps} from "@/_objects/Order";
-import {FetchedProduct} from "@/_objects/Product";
 
 class OrderService {
 
@@ -30,6 +29,24 @@ class OrderService {
     const response = await fetch(`/api/order/qrcode/${orderId}`, requestOptions);
     if (!response.ok) throw new Error('Erreur lors de la récupération du QR code');
     return await response.blob();
+  };
+
+  async getAll(): Promise<FetchedOrder[] | void> {
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      headers: {...authHeader()},
+    };
+    return await handleResponse(await fetch(`/api/order/allWithUser`, requestOptions));
+  };
+
+  async scanQrCode(values: any): Promise<Response> {
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      headers: {...authHeader()},
+      body: JSON.stringify(values)
+    };
+    const response = await fetch(`/api/qrcode/scan`, requestOptions);
+    return response;
   };
 
 }

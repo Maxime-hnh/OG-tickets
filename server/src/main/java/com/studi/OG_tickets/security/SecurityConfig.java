@@ -39,6 +39,11 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/product/create").hasAuthority("ADMIN")
                     .requestMatchers(HttpMethod.PUT,"/api/product/{id}").hasAuthority("ADMIN")
                     .requestMatchers(HttpMethod.DELETE,"/api/product/{id}").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/api/order/create/user/{userId}").hasAnyAuthority("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.PUT,"/api/order/validate/{orderId}/user/{userId}").hasAnyAuthority("USER", "ADMIN")
+                    .requestMatchers(HttpMethod.GET,"/api/order/all").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.GET,"/api/order/allWithUser").hasAuthority("ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/api/qrcode/scan").hasAuthority("ADMIN")
                     .anyRequest().permitAll()
             );
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

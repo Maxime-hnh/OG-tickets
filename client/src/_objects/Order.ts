@@ -1,4 +1,4 @@
-import {ProductProps} from "@/_objects/Product";
+import {FetchedUser} from "@/_objects/User";
 
 export enum OrderStatus {
   DRAFT = "DRAFT",
@@ -28,6 +28,8 @@ export type OrderProps = Partial<{
   userId: number;
   createdAt: Date;
   updatedAt: Date;
+
+  user?: FetchedUser;
 }>
 
 export type FetchedOrder = {

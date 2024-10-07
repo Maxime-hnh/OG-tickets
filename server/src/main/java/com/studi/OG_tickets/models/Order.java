@@ -48,7 +48,7 @@ public class Order {
   @Column(name = "products", columnDefinition = "json")
   private List<ProductFromOrderDto> products;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JsonIgnore
   @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;

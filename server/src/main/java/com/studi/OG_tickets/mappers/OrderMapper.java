@@ -2,6 +2,8 @@ package com.studi.OG_tickets.mappers;
 
 import com.studi.OG_tickets.dto.CreatedOrderResponseDto;
 import com.studi.OG_tickets.dto.OrderDto;
+import com.studi.OG_tickets.dto.OrderWithUserDto;
+import com.studi.OG_tickets.dto.UserShortDto;
 import com.studi.OG_tickets.models.Order;
 
 public class OrderMapper {
@@ -19,6 +21,28 @@ public class OrderMapper {
     orderDto.setProducts(order.getProducts());
     orderDto.setUserId(order.getUser().getId());
     return orderDto;
+  }
+
+  public static OrderWithUserDto toDtoWithUser(Order order) {
+    OrderWithUserDto orderWithUserDto = new OrderWithUserDto();
+    orderWithUserDto.setId(order.getId());
+    orderWithUserDto.setCur(order.getCur());
+    orderWithUserDto.setAmount(order.getAmount());
+    orderWithUserDto.setStatus(order.getStatus());
+    orderWithUserDto.setInvoice(order.getInvoice());
+    orderWithUserDto.setKey(order.getKey());
+    orderWithUserDto.setFinalKey(order.getFinalKey());
+    orderWithUserDto.setQrCode(order.getQrCode());
+    orderWithUserDto.setProducts(order.getProducts());
+    if (order.getUser() != null) {
+      UserShortDto userShortDto = new UserShortDto();
+      userShortDto.setId(order.getUser().getId());
+      userShortDto.setFirstName(order.getUser().getFirstName());
+      userShortDto.setLastName(order.getUser().getLastName());
+      userShortDto.setEmail(order.getUser().getEmail());
+      orderWithUserDto.setUser(userShortDto);
+    }
+    return orderWithUserDto;
   }
 
   public static Order toEntity(OrderDto orderDto) {
