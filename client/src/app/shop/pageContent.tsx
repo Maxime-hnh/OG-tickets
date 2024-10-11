@@ -1,10 +1,10 @@
 "use client"
 import {Box, Button, Divider, Group, ScrollArea, Stack, Text, Title, Transition} from "@mantine/core";
-import React, {useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {FetchedProduct} from "@/_objects/Product";
 import {productService} from "@/_services/product.service";
 import ShopCard from "@/app/shop/components/ShopCard";
-import {IconCheck, IconChevronRight, IconShoppingCart, IconShoppingCartCopy} from "@tabler/icons-react";
+import {IconCheck, IconChevronRight, IconForbid, IconShoppingCart, IconShoppingCartCopy} from "@tabler/icons-react";
 import CustomLoading from "@/_components/CustomLoading";
 import styles from './styles/ShopPage.module.scss';
 import {AuthenticatedUser, AuthenticationRequest, authenticationService} from "@/_services/authentication.service";
@@ -13,6 +13,7 @@ import {orderService} from "@/_services/order.service";
 import LoginForm from "@/_components/LoginForm";
 import {notifications} from "@mantine/notifications";
 import PaymentForm from "@/_components/PaymentForm";
+import {FetchedUser} from "@/_objects/User";
 
 const ShopPageContent = () => {
 
@@ -23,6 +24,9 @@ const ShopPageContent = () => {
   const [order, setOrder] = useState<FetchedOrder | null>(null);
   const [openLogin, setOpenLogin] = useState<boolean>(false);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const [loginStep, setLoginStep] = useState<number>(0);
+  const [userInfo, setUserInfo] = useState<Partial<FetchedUser> | null>(null);
 
   const getProducts = async () => {
     setIsLoading(true);
@@ -89,17 +93,45 @@ const ShopPageContent = () => {
     if (newOrderDraft) setOrder(newOrderDraft)
   }
 
-  const handleSubmitLoginForm = async (values: AuthenticationRequest) => {
-    const loggedUser = await authenticationService.login(values)
-    if (loggedUser) {
-      setAuthenticatedUser(loggedUser)
-      setOpenLogin(false);
+  const handleSubmitLoginForm = async (values: AuthenticationRequest, setLoader: Dispatch<SetStateAction<boolean>>) => {
+    try {
+      if (loginStep === 0) {
+        setLoader(true);
+        const userShortData = await authenticationService.login(loginStep, values)
+        if (userShortData) {
+          setUserInfo(userShortData)
+          setLoginStep(1)
+          setLoader(false)
+        }
+      }
+      if (loginStep === 1) {
+        setLoader(true)
+        let data = {
+          userId: userInfo!.id,
+          twoFactorCode: values.twoFactorCode
+        }
+        const loggedUser = await authenticationService.login(loginStep, data)
+        if (loggedUser) {
+          setLoader(false)
+          setAuthenticatedUser(loggedUser)
+          setOpenLogin(false);
+          notifications.show({
+            icon: <IconCheck/>,
+            color: "green",
+            position: "top-right",
+            title: "Connexion réussie !",
+            message: `Bonjour ${loggedUser.firstName} ${loggedUser.lastName}, vous pouvez à présent procéder au paiement`
+          })
+        }
+      }
+    } catch (e) {
+      setLoader(false)
       notifications.show({
-        icon: <IconCheck/>,
-        color: "green",
-        position: "top-right",
-        title: "Connexion réussie !",
-        message: `Bonjour ${loggedUser.firstName} ${loggedUser.lastName}, vous pouvez à présent procéder au paiement`
+        icon: <IconForbid/>,
+        color: "red",
+        position: "bottom-center",
+        title: "Erreur de connexion",
+        message: `Une erreur est survenue ${e}`
       })
     }
   }
@@ -198,6 +230,7 @@ const ShopPageContent = () => {
         onClose={() => setOpenLogin(false)}
         onSubmit={handleSubmitLoginForm}
         warningMessage={"Vous devez être authentifié avant d'aller plus loin"}
+        loginStep={loginStep}
       />
     </>
   )
