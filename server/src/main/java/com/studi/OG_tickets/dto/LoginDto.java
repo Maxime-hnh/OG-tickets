@@ -6,7 +6,4 @@ import lombok.Data;
 public class LoginDto {
   private String email;
   private String password;
-
-  private Long userId;
-  private String twoFactorCode;
 }

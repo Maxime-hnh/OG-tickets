@@ -16,27 +16,25 @@ public class AuthController {
 
   private AuthService authService;
 
-  @PostMapping("/login/step/{step}")
-  public ResponseEntity<?> login(@PathVariable Integer step, @RequestBody LoginDto body) {
+  @PostMapping("/login/step/0")
+  public ResponseEntity<UserShortDto> login(@RequestBody LoginDto body) {
     try {
-      switch (step) {
-        case 0:
-          try {
-            UserShortDto userShortDto = authService.login(body);
-            return ResponseEntity.ok(userShortDto);
-          } catch (BadRequestException e) {
-            throw new BadRequestException("Invalid username or password");
-          }
-        case 1:
-          AuthResponseDto authResponseDto = authService.checkTwoFactorCode(body.getUserId(), body.getTwoFactorCode());
-          return ResponseEntity.ok(authResponseDto);
-        default:
-          break;
-      }
+      UserShortDto userShortDto = authService.login(body);
+      return ResponseEntity.ok(userShortDto);
+    } catch (BadRequestException e) {
+      throw new BadRequestException("Invalid username or password");
+    }
+  }
+
+  @PostMapping("/login/step/1")
+  public ResponseEntity<AuthResponseDto> login(@RequestBody TwoFactorVerificationDto body) {
+    try {
+    AuthResponseDto authResponseDto = authService.checkTwoFactorCode(body.getUserId(), body.getTwoFactorCode());
+    return ResponseEntity.ok(authResponseDto);
     } catch (BadRequestException e) {
       throw new BadRequestException(e.getMessage());
     }
-    return null;
+
   }
 
   @PostMapping("/signup")

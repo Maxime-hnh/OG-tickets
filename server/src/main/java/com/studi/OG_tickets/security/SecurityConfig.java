@@ -35,7 +35,7 @@ public class SecurityConfig {
             .securityMatcher("/**")
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers( "/api/auth/login", "/api/auth/refreshToken").permitAll()
+                    .requestMatchers( "/api/auth/login/step/**", "/api/auth/refreshToken").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/product/create").hasAuthority("ADMIN")
                     .requestMatchers(HttpMethod.PUT,"/api/product/{id}").hasAuthority("ADMIN")
                     .requestMatchers(HttpMethod.DELETE,"/api/product/{id}").hasAuthority("ADMIN")
