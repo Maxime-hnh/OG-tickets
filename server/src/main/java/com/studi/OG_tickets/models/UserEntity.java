@@ -39,6 +39,9 @@ public class UserEntity {
   @Column(nullable = false)
   private String password;
 
+  @Column(length = 6)
+  private String twoFactorCode;
+
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
@@ -50,6 +53,7 @@ public class UserEntity {
     this.createdAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();
   }
+
   @PreUpdate
   protected void onUpdate() {
     this.updatedAt = LocalDateTime.now();

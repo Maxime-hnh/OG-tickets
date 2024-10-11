@@ -10,8 +10,9 @@ export enum AuthRole {
 }
 
 export class AuthenticationRequest {
-  email = "";
-  password = "";
+  email? = "";
+  password? = "";
+  twoFactorCode? = "";
 }
 
 export interface AuthenticatedUser {
@@ -42,7 +43,7 @@ class AuthenticationService {
     return await handleResponse(await fetch(`/api/auth/signup`, requestOptions));
   }
 
-  async login(values: AuthenticationRequest): Promise<AuthenticatedUser | void> {
+  async login(step: number, values: AuthenticationRequest): Promise<AuthenticatedUser | void> {
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -50,10 +51,12 @@ class AuthenticationService {
       },
       body: JSON.stringify(values),
     };
-    const response = await fetch('/api/auth/login', requestOptions);
+    const response = await fetch(`/api/auth/login/step/${step}`, requestOptions);
     const user = await handleResponse(response);
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    this.currentUserSubject.next(user);
+    if (step === 1) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      this.currentUserSubject.next(user);
+    }
     return user;
   }
 

@@ -33,6 +33,7 @@ public class AuthService {
   private final AuthenticationManager authenticationManager;
   private final JWTGenerator jwtGenerator;
   private final RefreshTokenService refreshTokenService;
+  private EmailService emailService;
 
   @Transactional
   public UserDto register(RegisterDto registerDto) {
@@ -49,41 +50,54 @@ public class AuthService {
       user.setRoles(Collections.singletonList(roles));
 
       UserEntity newUser = userRepository.save(user);
-     return UserMapper.toDto(newUser);
+      return UserMapper.toDto(newUser);
     } else {
       throw new BadRequestException("User already exists with email: " + registerDto.getEmail());
     }
   }
 
   @Transactional
-  public AuthResponseDto login(LoginDto loginDto) {
+  public UserShortDto login(LoginDto loginDto) {
     Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                     loginDto.getEmail(), loginDto.getPassword()
             )
     );
     SecurityContextHolder.getContext().setAuthentication(authentication);
-    String token = jwtGenerator.generateToken(authentication.getName()); //email
 
-    UserWithRoleDto loggedUser = userService.getByEmail(loginDto.getEmail());
-    Optional<RefreshToken> existingRefreshToken  = refreshTokenService.findByUserEmail(loggedUser.getEmail());
-    RefreshToken refreshTokenResponse;
-    if (existingRefreshToken.isEmpty() || refreshTokenService.isTokenExpired(existingRefreshToken.get())) {
-      existingRefreshToken.ifPresent(refreshTokenService::cleanUpExpiredToken);
+    UserEntity user = userService.getEntityByEmail(authentication.getName());
+    String twoFactoCode = emailService.generateAlphaNumericCode();
+    emailService.send2FAMail(authentication.getName(), twoFactoCode); //email
+    return userService.updateUser2FACode(user, twoFactoCode);
+  }
 
-      refreshTokenResponse = refreshTokenService.createRefreshToken(loginDto.getEmail());
+  @Transactional
+  public AuthResponseDto checkTwoFactorCode(Long id, String twoFactorCode) {
+    UserWithRoleDto user = userService.getById(id);
+    if (user.getTwoFactorCode().equals(twoFactorCode)) {
+      String token = jwtGenerator.generateToken(user.getEmail());
+      Optional<RefreshToken> existingRefreshToken = refreshTokenService.findByUserEmail(user.getEmail());
+      RefreshToken refreshTokenResponse;
+      if (existingRefreshToken.isEmpty() || refreshTokenService.isTokenExpired(existingRefreshToken.get())) {
+        existingRefreshToken.ifPresent(refreshTokenService::cleanUpExpiredToken);
+        refreshTokenResponse = refreshTokenService.createRefreshToken(user.getEmail());
+      } else {
+        refreshTokenResponse = existingRefreshToken.get();
+      }
+      userService.clearTwoFactorCode(id);
+
+      return new AuthResponseDto(
+              token,
+              refreshTokenResponse.getToken(),
+              user.getId(),
+              user.getEmail(),
+              user.getFirstName(),
+              user.getLastName(),
+              user.getRole()
+      );
     } else {
-      refreshTokenResponse = existingRefreshToken.get();
+      throw new BadRequestException("Two factor code does not match");
     }
-    return new AuthResponseDto(
-            token,
-            refreshTokenResponse.getToken(),
-            loggedUser.getId(),
-            loggedUser.getEmail(),
-            loggedUser.getFirstName(),
-            loggedUser.getLastName(),
-            loggedUser.getRole()
-    );
   }
 
   @Transactional

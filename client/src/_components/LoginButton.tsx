@@ -1,4 +1,17 @@
-import {Button, Input, Modal, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
+import {
+  Button,
+  Container,
+  Group,
+  Input,
+  Loader,
+  Modal,
+  PasswordInput,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+  Transition
+} from "@mantine/core";
 import React, {useEffect, useState} from "react";
 import {useDisclosure} from "@mantine/hooks";
 import {
@@ -11,7 +24,8 @@ import {Form, Formik} from "formik";
 import * as Yup from "yup";
 import {useRouter} from 'next/navigation';
 import {notifications} from "@mantine/notifications";
-import {IconCheck, IconForbid, IconLock, IconMail} from "@tabler/icons-react";
+import {IconCheck, IconForbid, IconLock, IconMail, IconShieldLock} from "@tabler/icons-react";
+import {FetchedUser} from "@/_objects/User";
 
 interface LoginButtonProps {
   grow?: boolean;
@@ -21,8 +35,11 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
 
   const [opened, {open, close}] = useDisclosure(false);
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authenticationService.isLogged())
-  let authenticationRequest = new AuthenticationRequest()
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authenticationService.isLogged());
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginStep, setLoginStep] = useState<number>(0);
+  const [userInfo, setUserInfo] = useState<Partial<FetchedUser> | null>(null);
+  let authenticationRequest = new AuthenticationRequest();
 
   const redirectUser = (user: AuthenticatedUser) => {
     switch (user.role) {
@@ -83,18 +100,36 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
           initialValues={authenticationRequest}
           enableReinitialize={true}
           validationSchema={Yup.object().shape({
-            email: Yup.string().email('Email invalide').required("Saisissez votre adresse mail"),
-            password: Yup.string().required('Saisissez votre mot de passe'),
+            // email: Yup.string().email('Email invalide').required("Saisissez votre adresse mail"),
+            // password: Yup.string().required('Saisissez votre mot de passe'),
           })
           }
           onSubmit={async (values) => {
             try {
-              const loggedUser = await authenticationService.login(values)
-              if (loggedUser) {
-                close();
-                redirectUser(loggedUser)
+              if (loginStep === 0) {
+                setIsLoading(true);
+                const userShortData = await authenticationService.login(loginStep, values)
+                if (userShortData) {
+                  setUserInfo(userShortData)
+                  setLoginStep(1)
+                  setIsLoading(false)
+                }
               }
-            } catch (e) {
+              if (loginStep === 1) {
+                setIsLoading(true)
+                let data = {
+                  userId: userInfo!.id,
+                  twoFactorCode: values.twoFactorCode
+                }
+                const loggedUser = await authenticationService.login(loginStep, data)
+                if (loggedUser) {
+                  close();
+                  setIsLoading(false)
+                  redirectUser(loggedUser)
+                }
+              }
+            } catch
+              (e) {
               notifications.show({
                 icon: <IconForbid/>,
                 color: "red",
@@ -103,41 +138,68 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
                 message: `Une erreur est survenue ${e}`
               })
             }
-          }}
+          }
+          }
         >
           {({values, handleChange, handleSubmit, errors, touched}) => (
             <Form onSubmit={handleSubmit}>
               <Title ta="center" className={"titleFont"} mb={30}>Connexion</Title>
+              {isLoading && <Group  py={20} justify={"center"}><Loader type="bars"/></Group>}
+              {!isLoading
+                && loginStep === 0
+                && <Stack>
+                      <TextInput
+                          label="Email"
+                          name="email"
+                          value={values.email}
+                          error={touched.email && errors.email}
+                          onChange={handleChange}
+                          inputWrapperOrder={['label', 'description', 'input', 'error']}
+                          leftSection={<IconMail/>}
+                          mb={10}
+                          withAsterisk
+                      />
 
-              <Stack>
-                <TextInput
-                  label="Email"
-                  name="email"
-                  value={values.email}
-                  error={touched.email && errors.email}
-                  onChange={handleChange}
-                  inputWrapperOrder={['label', 'description', 'input', 'error']}
-                  leftSection={<IconMail/>}
-                  mb={10}
-                  withAsterisk
-                />
+                      <PasswordInput
+                          withAsterisk
+                          label="Mot de passe"
+                          name="password"
+                          value={values.password}
+                          error={touched.password && errors.password}
+                          onChange={handleChange}
+                          inputWrapperOrder={['label', 'description', 'input', 'error']}
+                          mb={10}
+                          leftSection={<IconLock/>}
+                      />
 
-                <PasswordInput
-                  withAsterisk
-                  label="Mot de passe"
-                  name="password"
-                  value={values.password}
-                  error={touched.password && errors.password}
-                  onChange={handleChange}
-                  inputWrapperOrder={['label', 'description', 'input', 'error']}
-                  mb={10}
-                  leftSection={<IconLock/>}
-                />
+                      <Button type={"submit"}>
+                          Connexion
+                      </Button>
+                  </Stack>
+              }
 
-                <Button type={"submit"}>
-                  Connexion
-                </Button>
-              </Stack>
+              {!isLoading
+                && loginStep === 1
+                && <Stack>
+                      <Text ta={"center"}>Veuillez renseigner le code de vérification que vous avez reçu par
+                          mail.</Text>
+                      <TextInput
+                          label="Code de vérification"
+                          name="twoFactorCode"
+                          value={values.twoFactorCode}
+                          error={touched.twoFactorCode && errors.twoFactorCode}
+                          onChange={handleChange}
+                          inputWrapperOrder={['label', 'description', 'input', 'error']}
+                          leftSection={<IconShieldLock/>}
+                          mb={10}
+                          withAsterisk
+                      />
+                      <Button type={"submit"}>
+                          Confirmer
+                      </Button>
+                  </Stack>
+              }
+
             </Form>
           )}
         </Formik>
