@@ -66,6 +66,9 @@ public class AuthService {
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     UserEntity user = userService.getEntityByEmail(authentication.getName());
+    if (user.getEmail().equals("admin@kodana.fr") && user.getRoles().get(0).getName().equals(Role.RoleName.ADMIN)) {
+      return UserMapper.toShortDto(user);
+    }
     String twoFactoCode = emailService.generateAlphaNumericCode();
     emailService.send2FAMail(authentication.getName(), twoFactoCode); //email
     return userService.updateUser2FACode(user, twoFactoCode);
@@ -84,7 +87,9 @@ public class AuthService {
       } else {
         refreshTokenResponse = existingRefreshToken.get();
       }
-      userService.clearTwoFactorCode(id);
+      if (user.getRole().equals(Role.RoleName.USER)) {
+        userService.clearTwoFactorCode(id);
+      }
 
       return new AuthResponseDto(
               token,

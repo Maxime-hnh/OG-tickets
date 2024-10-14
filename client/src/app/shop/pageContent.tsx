@@ -5,6 +5,7 @@ import {FetchedProduct} from "@/_objects/Product";
 import {productService} from "@/_services/product.service";
 import ShopCard from "@/app/shop/components/ShopCard";
 import {
+  IconBuildingStore,
   IconCheck, IconChevronLeft,
   IconChevronRight,
   IconForbid,
@@ -29,6 +30,7 @@ const ShopPageContent = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<FetchedProduct[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<FetchedProduct[]>([]);
+  const [hideSummary, setHideSummary] = useState<boolean>(false);
   const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser | null>(authenticationService.loggedUserValue);
   const [order, setOrder] = useState<FetchedOrder | null>(null);
   const [openLogin, setOpenLogin] = useState<boolean>(false);
@@ -150,14 +152,22 @@ const ShopPageContent = () => {
     }
   }
 
+  const resetAndBackToStore = () => {
+    setShopStep(0);
+    setSelectedProducts([]);
+    setHideSummary(false);
+  }
+
   useEffect(() => {
     getProducts();
   }, []);
+
 
   if (isLoading) return <CustomLoading/>
   return (
     <>
       {isMobile
+        && !hideSummary
         && <Button
               mt={10}
               ml={"md"}
@@ -169,7 +179,8 @@ const ShopPageContent = () => {
           </Button>
       }
       <Group gap={0} id={"shopPage"} className={styles.shopPage} wrap={"nowrap"}>
-        <div className={`${styles.summaryBar} ${showSummary ? styles.visible : ''}`}>
+        <div
+          className={`${styles.summaryBar} ${showSummary ? styles.visible : ''} ${hideSummary ? styles.hide : ''}`}>
           <Title ta={"center"} className={"titleFont"}>Récapitulatif</Title>
           {isMobile
             && <ActionIcon pos={"absolute"} right={15} variant={"subtle"} color="gray"
@@ -207,7 +218,9 @@ const ShopPageContent = () => {
               : <Button
                 radius={"xl"}
                 leftSection={<IconChevronLeft/>}
-                onClick={() => setShopStep(0)}
+                onClick={() => {
+                  setShopStep(0)
+                }}
               >
                 Revenir à la boutique
               </Button>
@@ -257,9 +270,22 @@ const ShopPageContent = () => {
                   <PaymentForm
                     authenticatedUser={authenticatedUser!}
                     orderId={order!.id}
+                    setHideSummary={setHideSummary}
                     selectedProducts={selectedProducts}
                     totalPrice={totalPrice}
                   />
+                  {hideSummary
+                    && <Button
+                          m={"auto"}
+                          display={"flex"}
+                          mt={15}
+                          radius={"xl"}
+                          leftSection={<IconBuildingStore/>}
+                          onClick={resetAndBackToStore}
+                      >
+                          Revenir à la boutique
+                      </Button>
+                  }
                 </Box>
               }
             </Transition>

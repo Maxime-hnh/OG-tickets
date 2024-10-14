@@ -107,123 +107,122 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
           Se connecter
         </Button>
       }
-        <Modal
-          centered
-          opened={opened}
-          onClose={close}
-          overlayProps={{
-            backgroundOpacity: 0.55,
-            blur: 3,
-          }}
-          radius={"sm"}
-        >
-          <Formik
-            initialValues={authenticationRequest}
-            enableReinitialize={true}
-            validationSchema={getValidationSchema(loginStep)}
-            onSubmit={async (values) => {
-              try {
-                if (loginStep === 0) {
-                  setIsLoading(true);
-                  const userShortData = await authenticationService.login(loginStep, values)
-                  if (userShortData) {
-                    setUserInfo(userShortData)
-                    setLoginStep(1)
-                    setIsLoading(false)
-                  }
+      <Modal
+        centered
+        opened={opened}
+        onClose={close}
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+        radius={"sm"}
+      >
+        <Formik
+          initialValues={authenticationRequest}
+          enableReinitialize={true}
+          validationSchema={getValidationSchema(loginStep)}
+          onSubmit={async (values) => {
+            try {
+              if (loginStep === 0) {
+                setIsLoading(true);
+                const userShortData = await authenticationService.login(loginStep, values)
+                if (userShortData) {
+                  setUserInfo(userShortData)
+                  setLoginStep(1)
                 }
-                if (loginStep === 1) {
-                  setIsLoading(true)
-                  let data = {
-                    userId: userInfo!.id,
-                    twoFactorCode: values.twoFactorCode
-                  }
-                  const loggedUser = await authenticationService.login(loginStep, data)
-                  if (loggedUser) {
-                    close();
-                    setIsLoading(false)
-                    redirectUser(loggedUser)
-                  }
-                }
-              } catch
-                (e) {
-                notifications.show({
-                  icon: <IconForbid/>,
-                  color: "red",
-                  position: "bottom-center",
-                  title: "Erreur de connexion",
-                  message: `Une erreur est survenue ${e}`
-                })
               }
-            }
-            }
-          >
-            {({values, handleChange, handleSubmit, errors, touched}) => (
-              <Form onSubmit={handleSubmit}>
-                <Title ta="center" className={"titleFont"} mb={30}>Connexion</Title>
-                {isLoading && <Group py={20} justify={"center"}><Loader type="bars"/></Group>}
-                {!isLoading
-                  && loginStep === 0
-                  && <Stack>
-                        <TextInput
-                            label="Email"
-                            name="email"
-                            value={values.email}
-                            error={touched.email && errors.email}
-                            onChange={handleChange}
-                            inputWrapperOrder={['label', 'description', 'input', 'error']}
-                            leftSection={<IconMail/>}
-                            mb={10}
-                            withAsterisk
-                        />
-
-                        <PasswordInput
-                            withAsterisk
-                            label="Mot de passe"
-                            name="password"
-                            value={values.password}
-                            error={touched.password && errors.password}
-                            onChange={handleChange}
-                            inputWrapperOrder={['label', 'description', 'input', 'error']}
-                            mb={10}
-                            leftSection={<IconLock/>}
-                        />
-
-                        <Button type={"submit"}>
-                            Connexion
-                        </Button>
-                    </Stack>
+              if (loginStep === 1) {
+                setIsLoading(true)
+                let data = {
+                  userId: userInfo!.id,
+                  twoFactorCode: values.twoFactorCode
                 }
-
-                {!isLoading
-                  && loginStep === 1
-                  && <Stack>
-                        <Text ta={"center"}>Veuillez renseigner le code de vérification que vous avez reçu par
-                            mail.</Text>
-                        <TextInput
-                            label="Code de vérification"
-                            name="twoFactorCode"
-                            value={values.twoFactorCode}
-                            error={touched.twoFactorCode && errors.twoFactorCode}
-                            onChange={(event) => {
-                              const upperValue = event.currentTarget.value.toUpperCase();
-                              handleChange(event.currentTarget.name)(upperValue);
-                            }}
-                            inputWrapperOrder={['label', 'description', 'input', 'error']}
-                            leftSection={<IconShieldLock/>}
-                            mb={10}
-                            withAsterisk
-                        />
-                        <Button type={"submit"}>
-                            Confirmer
-                        </Button>
-                    </Stack>
+                const loggedUser = await authenticationService.login(loginStep, data)
+                if (loggedUser) {
+                  close();
+                  redirectUser(loggedUser)
                 }
+              }
+            } catch (e) {
+              notifications.show({
+                icon: <IconForbid/>,
+                color: "red",
+                position: "bottom-center",
+                title: "Erreur de connexion",
+                message: `Une erreur est survenue ${e}`
+              })
+            } finally {
+              setIsLoading(false);
+            }
+          }
+          }
+        >
+          {({values, handleChange, handleSubmit, errors, touched}) => (
+            <Form onSubmit={handleSubmit}>
+              <Title ta="center" className={"titleFont"} mb={30}>Connexion</Title>
+              {isLoading && <Group py={20} justify={"center"}><Loader type="bars"/></Group>}
+              {!isLoading
+                && loginStep === 0
+                && <Stack>
+                      <TextInput
+                          label="Email"
+                          name="email"
+                          value={values.email}
+                          error={touched.email && errors.email}
+                          onChange={handleChange}
+                          inputWrapperOrder={['label', 'description', 'input', 'error']}
+                          leftSection={<IconMail/>}
+                          mb={10}
+                          withAsterisk
+                      />
 
-              </Form>
-            )}
-          </Formik>
-        </Modal>
+                      <PasswordInput
+                          withAsterisk
+                          label="Mot de passe"
+                          name="password"
+                          value={values.password}
+                          error={touched.password && errors.password}
+                          onChange={handleChange}
+                          inputWrapperOrder={['label', 'description', 'input', 'error']}
+                          mb={10}
+                          leftSection={<IconLock/>}
+                      />
+
+                      <Button type={"submit"}>
+                          Connexion
+                      </Button>
+                  </Stack>
+              }
+
+              {!isLoading
+                && loginStep === 1
+                && <Stack>
+                      <Text ta={"center"}>Veuillez renseigner le code de vérification que vous avez reçu par
+                          mail.</Text>
+                      <TextInput
+                          label="Code de vérification"
+                          name="twoFactorCode"
+                          value={values.twoFactorCode}
+                          error={touched.twoFactorCode && errors.twoFactorCode}
+                          onChange={(event) => {
+                            const upperValue = event.currentTarget.value.toUpperCase();
+                            handleChange(event.currentTarget.name)(upperValue);
+                          }}
+                          inputWrapperOrder={['label', 'description', 'input', 'error']}
+                          leftSection={<IconShieldLock/>}
+                          mb={10}
+                          withAsterisk
+                      />
+                      <Button type={"submit"}>
+                          Confirmer
+                      </Button>
+                  </Stack>
+              }
+
+            </Form>
+          )}
+        </Formik>
+      </Modal>
     </>
   )
 

@@ -38,7 +38,7 @@ const ProductsTable = ({products, isLoading}: ProductsTableProps) => {
       },
       {
         header: "Chiffre d'affaires",
-        accessorFn: (row) => `${(row.price! * row.quantitySold!).toFixed(2)} €`,
+        accessorFn: (row) => !row.quantitySold ? "" : `${(row.price! * row.quantitySold!).toFixed(2)} €`,
       },
     ], []);
 

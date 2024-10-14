@@ -11,7 +11,7 @@ import {
   LoadingOverlay, Transition, Divider
 } from "@mantine/core";
 import {Form, Formik} from "formik";
-import React, {useState} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {formatCardNumber} from "@/_helpers/helper";
 import {AuthenticatedUser} from "@/_services/authentication.service";
 import {FetchedOrder} from "@/_objects/Order";
@@ -31,11 +31,18 @@ interface PaymentRequestValues {
 interface PaymentFormProps {
   orderId: number;
   authenticatedUser: AuthenticatedUser;
+  setHideSummary: Dispatch<SetStateAction<boolean>>
   selectedProducts: FetchedProduct[];
   totalPrice: number;
 }
 
-const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}: PaymentFormProps) => {
+const PaymentForm = ({
+                       orderId,
+                       authenticatedUser,
+                       setHideSummary,
+                       selectedProducts,
+                       totalPrice,
+                     }: PaymentFormProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -46,12 +53,11 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
     fullname: "",
     cardNumber: "",
     securityCode: "",
-    expirationDate : {
-      month : null,
-      year : null
+    expirationDate: {
+      month: null,
+      year: null
     }
   }
-
 
   const paiementRequest = async () => {
     try {
@@ -64,6 +70,7 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
           const qrCodeUrl = URL.createObjectURL(qrCodeBlob);
           setQrCodeUrl(qrCodeUrl);
           setIsSuccess(true);
+          setHideSummary(true);
         }
       }
     } catch (e) {
@@ -74,7 +81,14 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
   };
 
   return (
-    <Paper p={"lg"} withBorder w={600} m={"auto"} pos={"relative"} shadow={"sm"}>
+    <Paper
+      p={"lg"}
+      withBorder
+      w={{base: "100%", sm: !isSuccess ? "100%" : 600, md: 600}}
+      m={"auto"}
+      pos={"relative"}
+      shadow={"sm"}
+    >
       <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{radius: "sm", blur: 2}}/>
 
       {!isSuccess
