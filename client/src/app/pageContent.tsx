@@ -174,10 +174,10 @@ const HomePageContent = () => {
           <Divider c={"dark"} my={20}/>
           <SimpleGrid cols={{base: 1, sm: 2, lg: 3}}>
 
-            {articleCardData.map(article => (
+            {articleCardData.map((article, index) => (
               <Card key={article.title} p="md" radius="md" component="a" className={styles.article_card}>
                 <AspectRatio ratio={1920 / 1080}>
-                  <Image src={article.image} radius={"sm"}/>
+                  <Image src={article.image} radius={"sm"} alt={`représentation de l'article ${index}`}/>
                 </AspectRatio>
                 <Text c="dimmed" size="xs" tt="uppercase" fw={700} mt="md">
                   {article.date}
@@ -202,7 +202,7 @@ const HomePageContent = () => {
                     Remportez une place pour la finale de judo.
                   </Text>
                   <Text fz="sm" c="white" ta={"justify"}>
-                    Renseignez votre adresse mail et participez à la lotterie qui aura lieu le mardi 06 août 2024.
+                    Renseignez votre adresse mail et participez à la loterie qui aura lieu le mardi 06 août 2024.
                   </Text>
                 </div>
 
@@ -219,7 +219,7 @@ const HomePageContent = () => {
               </Stack>
             </Box>
             <Box className={styles.lottery_container_image}>
-              <Image src={"./olympics_fan.webp"} className={styles.lottery_image}/>
+              <Image src={"./olympics_fan.webp"} className={styles.lottery_image} alt={"supporters olympiques"}/>
             </Box>
           </Paper>
         </Container>
@@ -253,7 +253,7 @@ const HomePageContent = () => {
                 <Paper w={{base: "100%", md: "85%", xl: "70%"}} m={"auto"}>
                   <Flex wrap={"nowrap"} direction={{base: "column", md: "row"}} gap={"sm"} align={"center"}>
                     <AspectRatio ratio={width < 992 ? 1920 / 1080 : 3 / 4} className={styles.intro_img_container}>
-                      <Image w={400} src={item.image} radius={"sm"} className={styles.intro_img} style={item.style}/>
+                      <Image w={400} src={item.image} radius={"sm"} className={styles.intro_img} style={item.style} alt={item.title}/>
                     </AspectRatio>
                     <Paper h={{base: "100%", md: "50%"}} shadow={"md"} p={"xl"} className={styles.intro_text_container}>
                       <Stack align={"flex-start"}>

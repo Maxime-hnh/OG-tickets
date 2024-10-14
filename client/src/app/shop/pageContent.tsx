@@ -90,7 +90,7 @@ const ShopPageContent = () => {
   };
 
   useEffect(() => {
-    calculateTotalPrice()
+    calculateTotalPrice();
   }, [selectedProducts])
 
   const goToPayment = async (selectedProducts: SelectedProducts[], amount: number, userId: number | null | undefined) => {

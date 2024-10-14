@@ -15,11 +15,11 @@ const ConstructionMessage = ({buttonMessage, setSegmentValue}: ConstructionMessa
   return (
     <Container className={styles.root}>
       <SimpleGrid spacing={{base: 40, sm: 80}} cols={{base: 1, sm: 2}}>
-        <Image src={"/builder.svg"} className={styles.mobileImage}/>
+        <Image src={"/builder.svg"} className={styles.mobileImage} alt={"Chef de chantier"}/>
         <div>
           <Title className={styles.title}>Bientôt disponible...</Title>
           <Text c="dimmed" size="lg" ta={"justify"}>
-            Nos équipes travaillent activement à l'enrichissement du site pour vous offrir une expérience
+            Nos équipes travaillent activement à l&apos;enrichissement du site pour vous offrir une expérience
             toujours plus complète et agréable. Nous vous invitons à revenir prochainement pour découvrir toutes les
             nouveautés. Merci de votre patience et à très bientôt !
           </Text>
@@ -34,7 +34,7 @@ const ConstructionMessage = ({buttonMessage, setSegmentValue}: ConstructionMessa
           </Button>
 
         </div>
-        <Image src={"/builder.svg"} className={styles.desktopImage}/>
+        <Image src={"/builder.svg"} className={styles.desktopImage} alt={"Chef de chantier"}/>
       </SimpleGrid>
     </Container>
   )
