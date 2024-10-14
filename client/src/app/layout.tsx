@@ -9,7 +9,7 @@ import 'mantine-react-table/styles.css';
 import {
   ColorSchemeScript,
   createTheme,
-  MantineProvider, Text
+  MantineProvider
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import React, {useEffect, useState} from "react";
@@ -25,7 +25,6 @@ import 'dayjs/locale/fr';
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import './globals.css';
 
-
 const inter = Inter({subsets: ["latin"]});
 const themeMantine = createTheme({
   autoContrast: true
@@ -34,16 +33,14 @@ const themeMantine = createTheme({
 const Layout = ({children}: Readonly<{ children: React.ReactNode; }>) => {
 
   dayjs.extend(customParseFormat);
-
   const [opened, {toggle}] = useDisclosure();
   const {width} = useWindowSize();
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith('/admin');
 
-
   useEffect(() => {
-    const isMobile = window.innerWidth <= MOBILE_SIZE;
+    const isMobile = window.innerWidth < MOBILE_SIZE;
     setIsMobile(isMobile);
     const vh = window.innerHeight * 0.01;
     if (isMobile) document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -58,7 +55,7 @@ const Layout = ({children}: Readonly<{ children: React.ReactNode; }>) => {
     <body className={inter.className}>
     <MantineProvider theme={themeMantine}>
       <AppContext.Provider value={{
-        isMobile
+        isMobile,
       }}>
         <Notifications/>
         {isAdminRoute

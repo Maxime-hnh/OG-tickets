@@ -12,17 +12,18 @@ import {
 } from "@mantine/core";
 import {Form, Formik} from "formik";
 import React, {useState} from "react";
-import {DateInput} from "@mantine/dates";
 import {formatCardNumber} from "@/_helpers/helper";
 import {AuthenticatedUser} from "@/_services/authentication.service";
 import {FetchedOrder} from "@/_objects/Order";
 import {orderService} from "@/_services/order.service";
 import {FetchedProduct} from "@/_objects/Product";
+import ExpirationDateInput from "@/_components/ExpirationDateInput";
+import * as Yup from "yup";
 
 interface PaymentRequestValues {
   fullname: string;
   cardNumber: string;
-  expirationDate?: Date;
+  expirationDate?: any;
   securityCode: string;
 }
 
@@ -40,11 +41,15 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [validatedOrder, setValidatedOrder] = useState<FetchedOrder | null>(null);
   const [qrCodeUrl, setQrCodeUrl] = useState<any>()
-  console.log(validatedOrder)
+
   let PaymentValues: PaymentRequestValues = {
     fullname: "",
     cardNumber: "",
-    securityCode: ""
+    securityCode: "",
+    expirationDate : {
+      month : null,
+      year : null
+    }
   }
 
 
@@ -94,11 +99,36 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
               <Formik
                   initialValues={PaymentValues}
                   onSubmit={paiementRequest}
+                  validationSchema={Yup.object().shape({
+                    fullname: Yup.string().required("Le nom complet est requis"),
+                    cardNumber: Yup.string()
+                      .length(19, 'Le numéro de carte doit contenir exactement 16 chiffres')
+                      .matches(/^[0-9 ]+$/, "Le numéro de carte doit uniquement contenir des chiffres")
+                      .required("Le numéro de carte bancaire est requis"),
+                    securityCode: Yup.string()
+                      .length(3, "Le code de sécurité doit contenir exactement 3 chiffres")
+                      .matches(/^[0-9]+$/, "Le code de sécurité doit uniquement contenir des chiffres")
+                      .required("Le code de sécurité est requis"),
+                    expirationDate: Yup.object({
+                      month: Yup.number()
+                        .min(1, 'Le mois doit être au moins 1')
+                        .max(12, 'Le mois ne peut pas être supérieur à 12')
+                        .nullable()
+                        .required('Le mois est requis'),
+                      year: Yup.number()
+                        .min(new Date().getFullYear(), "L'année ne peut pas être dans le passé")
+                        .max(new Date().getFullYear() + 20, "L'année n'est pas valide")
+                        .required("L'année est requise")
+
+                    }),
+                  })
+                  }
               >
-                {({values, handleChange, handleSubmit, errors, touched}) => (
+                {({values, handleChange, handleSubmit, errors, touched, setFieldValue}) => (
 
                   <Form onSubmit={handleSubmit}>
                     <TextInput
+                      name="fullname"
                       styles={{
                         input: {
                           borderLeft: "none",
@@ -108,7 +138,6 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
                       }}
                       radius={0}
                       label="Titulaire de la carte"
-                      name="fullname"
                       value={values.fullname}
                       error={touched.fullname && errors.fullname}
                       onChange={handleChange}
@@ -116,6 +145,7 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
                       mb={10}
                     />
                     <TextInput
+                      name="cardNumber"
                       styles={{
                         input: {
                           borderLeft: "none",
@@ -125,7 +155,6 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
                       }}
                       radius={0}
                       label="Numéro de la carte"
-                      name="cardNumber"
                       value={formatCardNumber(values.cardNumber)}
                       error={touched.cardNumber && errors.cardNumber}
                       onChange={(e) => {
@@ -140,24 +169,11 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
                       inputWrapperOrder={['label', 'description', 'input', 'error']}
                       mb={10}
                     />
-                    <Group align={"center"} mb={30}>
-                      <DateInput
-                        name={"expirationDate"}
-                        locale={"fr"}
-                        valueFormat={"MM/YYYY"}
-                        styles={{
-                          input: {
-                            borderLeft: "none",
-                            borderRight: "none",
-                            borderTop: "none"
-                          }
-                        }}
-                        radius={0}
-                        value={values.expirationDate ?? new Date()}
-                        onChange={handleChange}
-                        label="Date d'expiration"
-                        placeholder="01/01/2030"
-                        mr={20}
+                    <Group align={"flex-end"} mb={30}>
+                      <ExpirationDateInput
+                        month={values.expirationDate?.month}
+                        year={values.expirationDate?.year}
+                        setFieldValue={setFieldValue}
                       />
                       <PasswordInput
                         styles={{
@@ -170,6 +186,7 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
                         radius={0}
                         label="Crytptogramme"
                         name="securityCode"
+                        maxLength={3}
                         value={values.securityCode}
                         error={touched.securityCode && errors.securityCode}
                         onChange={handleChange}
@@ -178,6 +195,8 @@ const PaymentForm = ({orderId, authenticatedUser, selectedProducts, totalPrice}:
 
                     </Group>
                     <Button type={"submit"}>Confirmer le paiement</Button>
+                    <Text fz={"xs"} c={"dimmed"}>Ceci est un faux paiement, ne renseignez pas vos coordonnées
+                      bancaires.</Text>
                   </Form>
                 )}
               </Formik>

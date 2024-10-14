@@ -6,7 +6,7 @@ import {Button, Container, SimpleGrid} from "@mantine/core";
 import ProductCard from "@/app/admin/products/components/ProductCard";
 import CustomDrawer from "@/_components/CustomDrawer";
 import {notifications} from "@mantine/notifications";
-import {IconCheck} from "@tabler/icons-react";
+import {IconCheck, IconPencilPlus} from "@tabler/icons-react";
 import ProductForm from "@/app/admin/products/components/ProductForm";
 
 const ProductsPageContent = () => {
@@ -22,7 +22,7 @@ const ProductsPageContent = () => {
       setIsLoading(true);
       const data = await productService.getProducts();
       if (data) setProducts(data as FetchedProduct[]);
-    } catch(e) {
+    } catch (e) {
       console.error(e)
     } finally {
       setIsLoading(false);
@@ -93,9 +93,9 @@ const ProductsPageContent = () => {
   return (
     <>
       <Container mx={0} miw={"100%"}>
-        <Button onClick={() => setFormValues(new Product())}>Ajouter</Button>
+        <Button mb={10} leftSection={<IconPencilPlus/>} onClick={() => setFormValues(new Product())}>Ajouter</Button>
 
-        <SimpleGrid cols={4}>
+        <SimpleGrid cols={{base: 1, xs: 2, md: 3, lg: 4}}>
           {products.length > 0
             && products.map(product => (
               <ProductCard

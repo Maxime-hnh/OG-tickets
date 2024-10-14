@@ -60,6 +60,7 @@
 .article_card {
   transition: transform 150ms ease,
   box-shadow 150ms ease;
+  cursor: pointer;
 
   &:hover {
     transform: scale(1.02) translateY(-10px);

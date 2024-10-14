@@ -2,7 +2,7 @@ import {authenticationService} from "@/_services/authentication.service";
 
 export function authHeader(type: 'json' | 'form' | 'text' = "json"): HeadersInit {
   // return authorization header with jwt token
-  const currentUser = authenticationService.currentUserValue;
+  const loggedUser = authenticationService.loggedUserValue;
   let header: HeadersInit = {};
   switch (type) {
     case "json":
@@ -26,8 +26,8 @@ export function authHeader(type: 'json' | 'form' | 'text' = "json"): HeadersInit
       break;
   }
 
-  if (currentUser && currentUser.accessToken) {
-    header["Authorization"] = "Bearer " + currentUser.accessToken;
+  if (loggedUser && loggedUser.accessToken) {
+    header["Authorization"] = "Bearer " + loggedUser.accessToken;
   }
 
   return header;

@@ -1,6 +1,6 @@
 import {BehaviorSubject, Observable} from 'rxjs';
 import {handleResponse} from "@/_helpers/handle-response";
-import {FetchedUser, UserSignup} from "@/_objects/User";
+import {UserSignup} from "@/_objects/User";
 import {authHeader} from "@/_helpers/auth-header";
 
 export enum AuthRole {
@@ -26,12 +26,12 @@ export interface AuthenticatedUser {
 }
 
 class AuthenticationService {
-  private readonly currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser') ?? 'null'));
+  private readonly loggedUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('loggedUser') ?? 'null'));
 
-  currentUser: Observable<AuthenticatedUser | null> = this.currentUserSubject.asObservable();
+  loggedUser: Observable<AuthenticatedUser | null> = this.loggedUserSubject.asObservable();
 
-  get currentUserValue(): AuthenticatedUser | null {
-    return this.currentUserSubject.value;
+  get loggedUserValue(): AuthenticatedUser | null {
+    return this.loggedUserSubject.value;
   }
 
   async signup(body: UserSignup) {
@@ -54,8 +54,8 @@ class AuthenticationService {
     const response = await fetch(`/api/auth/login/step/${step}`, requestOptions);
     const user = await handleResponse(response);
     if (step === 1) {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      this.currentUserSubject.next(user);
+      localStorage.setItem('loggedUser', JSON.stringify(user));
+      this.loggedUserSubject.next(user);
     }
     return user;
   }
@@ -70,14 +70,14 @@ class AuthenticationService {
     };
     const response = await fetch('api/auth/refreshToken', requestOptions);
     const user = await handleResponse(response);
-    localStorage.setItem('CurrentUser', JSON.stringify((user)));
-    this.currentUserSubject.next(user);
+    localStorage.setItem('loggedUser', JSON.stringify((user)));
+    this.loggedUserSubject.next(user);
     return user;
   }
 
   isLogged(): boolean {
-    const currentUser = localStorage.getItem('currentUser');
-    return currentUser !== null;
+    const loggedUser = localStorage.getItem('loggedUser');
+    return loggedUser !== null;
   }
 
   hasRole(role: AuthRole): boolean {
@@ -86,29 +86,16 @@ class AuthenticationService {
 
   getRole(): AuthRole {
     if (this.isLogged()) {
-      if (this.currentUserValue)
-        return this.currentUserValue.role;
+      if (this.loggedUserValue)
+        return this.loggedUserValue.role;
       return AuthRole.USER;
     }
     return AuthRole.USER;
   }
 
-  async me(): Promise<FetchedUser | null> {
-    const requestOptions = {
-      method: 'GET',
-      headers: authHeader(),
-    };
-
-    return fetch('/api/auth/me', requestOptions)
-      .then(handleResponse)
-      .then((user) => {
-        return user;
-      });
-  }
-
   logout(): void {
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
+    localStorage.removeItem('loggedUser');
+    this.loggedUserSubject.next(null);
   }
 }
 

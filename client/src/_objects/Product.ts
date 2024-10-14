@@ -1,7 +1,7 @@
 export enum ProductCategory {
   SOLO = "SOLO",
   DUO = "DUO",
-  FAMILY = "FAMILY"
+  FAMILY = "FAMILIALE"
 }
 
 

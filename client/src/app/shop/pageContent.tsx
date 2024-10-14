@@ -1,10 +1,17 @@
 "use client"
-import {Box, Button, Divider, Group, ScrollArea, Stack, Text, Title, Transition} from "@mantine/core";
-import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {ActionIcon, Box, Button, Divider, Group, rem, ScrollArea, Stack, Text, Title, Transition} from "@mantine/core";
+import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
 import {FetchedProduct} from "@/_objects/Product";
 import {productService} from "@/_services/product.service";
 import ShopCard from "@/app/shop/components/ShopCard";
-import {IconCheck, IconChevronRight, IconForbid, IconShoppingCart, IconShoppingCartCopy} from "@tabler/icons-react";
+import {
+  IconCheck, IconChevronLeft,
+  IconChevronRight,
+  IconForbid,
+  IconShoppingCart,
+  IconShoppingCartCopy, IconShoppingCartFilled,
+  IconX
+} from "@tabler/icons-react";
 import CustomLoading from "@/_components/CustomLoading";
 import styles from './styles/ShopPage.module.scss';
 import {AuthenticatedUser, AuthenticationRequest, authenticationService} from "@/_services/authentication.service";
@@ -14,16 +21,20 @@ import LoginForm from "@/_components/LoginForm";
 import {notifications} from "@mantine/notifications";
 import PaymentForm from "@/_components/PaymentForm";
 import {FetchedUser} from "@/_objects/User";
+import AppContext from "@/app/Context/AppContext";
 
 const ShopPageContent = () => {
 
+  const {isMobile} = useContext(AppContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<FetchedProduct[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<FetchedProduct[]>([]);
-  const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser | null>(authenticationService.currentUserValue);
+  const [authenticatedUser, setAuthenticatedUser] = useState<AuthenticatedUser | null>(authenticationService.loggedUserValue);
   const [order, setOrder] = useState<FetchedOrder | null>(null);
   const [openLogin, setOpenLogin] = useState<boolean>(false);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [showSummary, setShowSummary] = useState(false);
+  const [shopStep, setShopStep] = useState<number>(0);
 
   const [loginStep, setLoginStep] = useState<number>(0);
   const [userInfo, setUserInfo] = useState<Partial<FetchedUser> | null>(null);
@@ -90,7 +101,10 @@ const ShopPageContent = () => {
     // @ts-ignore
     data.products = selectedProducts;
     const newOrderDraft = await orderService.createOrder(data, userId!);
-    if (newOrderDraft) setOrder(newOrderDraft)
+    if (newOrderDraft) {
+      setOrder(newOrderDraft);
+      setShopStep(1);
+    }
   }
 
   const handleSubmitLoginForm = async (values: AuthenticationRequest, setLoader: Dispatch<SetStateAction<boolean>>) => {
@@ -143,9 +157,26 @@ const ShopPageContent = () => {
   if (isLoading) return <CustomLoading/>
   return (
     <>
+      {isMobile
+        && <Button
+              mt={10}
+              ml={"md"}
+              radius={"xl"}
+              leftSection={selectedProducts.length > 0 ? <IconShoppingCartFilled/> : <IconShoppingCart/>}
+              onClick={() => setShowSummary(!showSummary)}
+          >
+              Mon panier
+          </Button>
+      }
       <Group gap={0} id={"shopPage"} className={styles.shopPage} wrap={"nowrap"}>
-        <div className={styles.navbar}>
+        <div className={`${styles.summaryBar} ${showSummary ? styles.visible : ''}`}>
           <Title ta={"center"} className={"titleFont"}>Récapitulatif</Title>
+          {isMobile
+            && <ActionIcon pos={"absolute"} right={15} variant={"subtle"} color="gray"
+                           onClick={() => setShowSummary(!showSummary)}>
+                  <IconX style={{width: rem(50), height: rem(50)}}/>
+              </ActionIcon>
+          }
           <Divider my={15}/>
           <ScrollArea h={"75%"}>
             <Stack>
@@ -163,21 +194,31 @@ const ShopPageContent = () => {
               <Text fz={"1.5rem"} fw={700} className={"titleFont"}>Total : </Text>
               <Text fz={"1.5rem"} fw={700} className={"titleFont"}>{totalPrice} €</Text>
             </Group>
-            <Button
-              radius={"xl"}
-              rightSection={<IconChevronRight/>}
-              leftSection={!selectedProducts ? <IconShoppingCart/> : <IconShoppingCartCopy/>}
-              onClick={() => goToPayment(selectedProducts as SelectedProducts[], totalPrice, authenticatedUser?.id)}
-            >
-              Procéder au paiement
-            </Button>
+            {shopStep === 0
+              ? <Button
+                disabled={selectedProducts.length < 1}
+                radius={"xl"}
+                rightSection={<IconChevronRight/>}
+                leftSection={!selectedProducts ? <IconShoppingCart/> : <IconShoppingCartCopy/>}
+                onClick={() => goToPayment(selectedProducts as SelectedProducts[], totalPrice, authenticatedUser?.id)}
+              >
+                Procéder au paiement
+              </Button>
+              : <Button
+                radius={"xl"}
+                leftSection={<IconChevronLeft/>}
+                onClick={() => setShopStep(0)}
+              >
+                Revenir à la boutique
+              </Button>
+            }
           </Stack>
         </div>
 
         <Box w={"100%"} h={"100%"} p={"md"}>
           <ScrollArea h={"100%"}>
             <Transition
-              mounted={order === null}
+              mounted={shopStep === 0}
               transition="slide-down"
               duration={400}
               timingFunction="ease"
@@ -197,7 +238,7 @@ const ShopPageContent = () => {
               }
             </Transition>
             <Transition
-              mounted={order !== null && authenticatedUser !== null}
+              mounted={shopStep === 1 && authenticatedUser !== null}
               transition="slide-up"
               duration={400}
               timingFunction="ease"

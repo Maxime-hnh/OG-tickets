@@ -1,8 +1,8 @@
-import {Badge, Group, Image, Paper, Text, Stack, Title, Button, Flex, ActionIcon} from "@mantine/core";
+import {Badge, Group, Image, Paper, Text, Stack, Title, Flex, ActionIcon} from "@mantine/core";
 import {FetchedProduct, ProductCategory} from "@/_objects/Product";
 import {colors} from "@/_helpers/colors";
 import dayjs from "dayjs";
-import {IconCalendarMonth, IconCirclePlus, IconMapPin, IconMinus, IconPlus, IconTrash} from "@tabler/icons-react";
+import {IconCalendarMonth, IconMapPin, IconMinus, IconPlus} from "@tabler/icons-react";
 import useWindowSize from "@/_components/Utils/useWindowSize";
 import {useState} from "react";
 
@@ -75,22 +75,22 @@ const ShopCard = ({product, selectedProducts, addToCart, removeFromCart}: Produc
         <Badge pos={"absolute"} color={"gray"} left={5} top={5}>
           <Text size={"xs"}>{dayjs(product.date!).format("DD MMM")}</Text>
         </Badge>
-        {width > 610
+        {width >= 835
           && <Image
                 src={product.image}
                 alt="Image sportive"
                 fit="cover"
-                h={{base: 50, sm: 100}}
+                h={{sm: 80, md : 100}}
             />
         }
-        <Stack style={{flex: 1}} justify={"space-between"}>
+        <Stack style={{flex: 1}} justify={"space-between"} mt={width < 835 ? 15 : 0}>
           <Group justify="flex-start" align={"center"} mt={width < 610 ? 10 : 0}>
             <Title order={3}>{product.name}</Title>
             <Badge
               color={
-                ProductCategory.SOLO
+                product.category === ProductCategory.SOLO
                   ? colors.og_yellow_2
-                  : ProductCategory.DUO
+                  : product.category === ProductCategory.DUO
                     ? colors.og_green
                     : colors.og_blue
               }
@@ -105,7 +105,7 @@ const ShopCard = ({product, selectedProducts, addToCart, removeFromCart}: Produc
           </Text>
           <Stack gap={5}>
             <Group gap={5}>
-              <IconCalendarMonth/>
+              {width > 324 && <IconCalendarMonth/>}
               <Text size={"sm"} fw={"bold"}>
                 {`${dayjs(product.date).locale("fr").format("ddd DD/MM/YYYY")} 
            | ${dayjs(product.startTime, "HH:mm:ss").format("HH:mm")} 
@@ -114,14 +114,21 @@ const ShopCard = ({product, selectedProducts, addToCart, removeFromCart}: Produc
               </Text>
             </Group>
             <Group gap={5}>
-              <IconMapPin/>
+              {width > 324 && <IconMapPin/> }
               <Text size={"sm"} fw={"bold"}>
                 {`${product.city} | ${product.venue}`}
               </Text>
             </Group>
           </Stack>
         </Stack>
-        <Stack align={"flex-end"} w={width < 576 ? "100%" : ""}>
+        <Flex
+          gap={5}
+          direction={width > 363 ? "column" : "row"}
+          justify={width > 363 ? "initial" : "space-between"}
+          mt={width > 363 ? 0 : 10}
+          align={"flex-end"}
+          w={width < 576 ? "100%" : ""}
+        >
           <Text
             ta={"center"}
             fw={"bold"}
@@ -130,7 +137,7 @@ const ShopCard = ({product, selectedProducts, addToCart, removeFromCart}: Produc
             {product.price} €
           </Text>
           {quantityChoice}
-        </Stack>
+        </Flex>
       </Flex>
     </Paper>
   )

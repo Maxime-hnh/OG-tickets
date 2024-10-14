@@ -4,12 +4,12 @@ import {AuthenticatedUser} from "@/_services/authentication.service";
 import {FetchedUser} from "@/_objects/User";
 
 export interface AdminContext {
-  authenticatedUser: AuthenticatedUser | null;
+  authenticatedAdmin: AuthenticatedUser | null;
   userInfo: FetchedUser | null;
 }
 
 const defaultAdminContext: AdminContext = {
-  authenticatedUser: null,
+  authenticatedAdmin: null,
   userInfo: null
 };
 

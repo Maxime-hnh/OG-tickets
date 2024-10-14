@@ -23,11 +23,11 @@ export async function handleResponse<TData = any>(response: Response): Promise<a
     if (response.status === 401) {
       console.log("error 401 " + response.statusText, response);
       try {
-        const currentUser = authenticationService.currentUserValue;
-        if (currentUser && currentUser.refreshToken) {
-          const newCurrentUser = await authenticationService.refreshToken(currentUser.refreshToken)
-          if (newCurrentUser) {
-            return await retryOriginalRequest(response, newCurrentUser.refreshToken);
+        const loggedUser = authenticationService.loggedUserValue;
+        if (loggedUser && loggedUser.refreshToken) {
+          const newLoggedUser = await authenticationService.refreshToken(loggedUser.refreshToken)
+          if (newLoggedUser) {
+            return await retryOriginalRequest(response, newLoggedUser.refreshToken);
           } else {
             authenticationService.logout();
             window.location.reload();

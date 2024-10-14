@@ -8,13 +8,15 @@ import {
   AppShellMain,
   AppShellNavbar, AppShellSection, Divider,
 } from '@mantine/core';
-import {AppShell, Burger, Group, Image} from '@mantine/core';
-import React from "react";
+import {AppShell, Burger, Group, Image, Text} from '@mantine/core';
+import React, {useContext} from "react";
 import Link from "next/link";
 import LoginButton from "@/_components/LoginButton";
 import SignupButton from "@/_components/SignupButton";
 import "./RootLayout.scss";
 import FooterLayout from "@/_components/Layouts/FooterLayout";
+import AppContext from "@/app/Context/AppContext";
+import useWindowSize from "@/_components/Utils/useWindowSize";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -24,6 +26,9 @@ interface RootLayoutProps {
 
 const RootLayout = ({children, opened, toggle}: RootLayoutProps) => {
 
+  const {isMobile} = useContext(AppContext);
+  const {width} = useWindowSize();
+
   return (
     <AppShell
       id={"rootLayout"}
@@ -31,32 +36,34 @@ const RootLayout = ({children, opened, toggle}: RootLayoutProps) => {
       navbar={{width: 300, breakpoint: 'sm', collapsed: {desktop: true, mobile: !opened}}}
       padding="md"
     >
-      <AppShellHeader withBorder={true}>
-          <Group justify="space-between" style={{flex: 1}} h={"100%"} px={"md"}>
-            <Image
-              radius={'xs'}
-              w={"48px"}
-              src="/logo_OG.svg"
-              alt="logo"
-            />
-            <Group gap={0} visibleFrom="sm" h={"100%"}>
-              <Link href={"/"} className={"link"}>Accueil</Link>
-              <Link href={"/shop"} className={"link"}>Offres</Link>
-              <Link href={"/shop"} className={"link"}>Contact</Link>
-            </Group>
-            <Group visibleFrom="sm">
-              <SignupButton/>
-              <LoginButton/>
-            </Group>
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" color={"black"}/>
+      <AppShellHeader withBorder={isMobile} bg={"#222"}>
+        <Group justify="space-between" style={{flex: 1}} h={"100%"} px={"md"}>
+          <Image
+            radius={'xs'}
+            w={"48px"}
+            src="/logo_OG.svg"
+            alt="logo"
+          />
+          <Group gap={width < 991 ? 3 : "lg"} visibleFrom="sm" h={"100%"}>
+            <Link href={"/"} className={"link"}>Accueil</Link>
+            <Link href={"/shop"} className={"link"}>Offres</Link>
+            <Text className={"link"}>Résultats</Text>
+            <Text className={"link"}>Contact</Text>
           </Group>
+          <Group visibleFrom="sm">
+            <SignupButton/>
+            <LoginButton/>
+          </Group>
+          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" color={"white"}/>
+        </Group>
       </AppShellHeader>
 
-      <AppShellNavbar py="md" px={4}>
+      <AppShellNavbar py="md" px={4} bg={"#222"}>
         <Link href={"/"} className={"link"}>Accueil</Link>
         <Link href={"/shop"} className={"link"}>Offres</Link>
-        <Link href={"/shop"} className={"link"}>Contact</Link>
-        <Divider my="sm" />
+        <Text className={"link"}>Résultats</Text>
+        <Text className={"link"}>Contact</Text>
+        <Divider my="sm"/>
         <Group align={"center"} justify={"space-between"}>
           <SignupButton grow={true}/>
           <LoginButton grow={true}/>

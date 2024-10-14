@@ -1,5 +1,5 @@
-import {Badge, Button, Card, Group, Image, Text} from "@mantine/core";
-import {IconClock, IconEdit, IconTrash} from "@tabler/icons-react";
+import {Badge, Button, Card, Divider, Group, Image, Text} from "@mantine/core";
+import {IconBuildingStadium, IconEdit, IconMapPin, IconTrash} from "@tabler/icons-react";
 import {FetchedProduct, ProductCategory} from "@/_objects/Product";
 import {colors} from "@/_helpers/colors";
 import {useContext} from "react";
@@ -16,8 +16,8 @@ interface ProductCardProps {
 
 const ProductCard = ({product, editProduct, deleteProduct}: ProductCardProps) => {
 
-  const {authenticatedUser} = useContext(AdminContext);
-  const isAdmin = authenticatedUser?.role === AuthRole.ADMIN;
+  const {authenticatedAdmin} = useContext(AdminContext);
+  const isAdmin = authenticatedAdmin?.role === AuthRole.ADMIN;
 
   return (
     <Card
@@ -37,13 +37,13 @@ const ProductCard = ({product, editProduct, deleteProduct}: ProductCardProps) =>
         />
       </Card.Section>
 
-      <Group justify="space-between" mt="md" mb="xs">
-        <Text fw={500} style={{flex: 1}}>{product.name}</Text>
+      <Group justify="space-between" mt="md" mb="md">
+        <Text fw={"bold"} style={{flex: 1}}>{product.name}</Text>
         <Badge
           color={
-            ProductCategory.SOLO
+            product.category === ProductCategory.SOLO
               ? colors.og_yellow_2
-              : ProductCategory.DUO
+              : product.category === ProductCategory.DUO
                 ? colors.og_green
                 : colors.og_blue
           }
@@ -53,28 +53,32 @@ const ProductCard = ({product, editProduct, deleteProduct}: ProductCardProps) =>
         </Badge>
 
       </Group>
-      <Text size="sm" c="dimmed">
-        {product.description}
-      </Text>
+      <Group justify={"space-between"}>
+        <Group gap={2}>
+          <IconMapPin color={"#868e96"}/>
+          <Text size="sm" c="dimmed">
+            {product.city}
+          </Text>
+        </Group>
+        <Group gap={2}>
+          <IconBuildingStadium color={"#868e96"}/>
+          <Text size="sm" c="dimmed">
+            {product.venue}
+          </Text>
+        </Group>
+      </Group>
+      <Divider my={15}/>
       <Text
         ta={"center"}
         fw={"bold"}
         c={"green"}
+        fz={"xl"}
       >
         {product.price} €
       </Text>
 
       {isAdmin
         && <Group>
-              <Button
-                  color="red" mt="md" radius="sm"
-                  variant={"outline"}
-                  style={{flex: 1}}
-                  onClick={() => deleteProduct(product.id)}
-              >
-                  <IconTrash/>
-              </Button>
-
               <Button
                   color="blue"
                   mt="md"
@@ -84,6 +88,14 @@ const ProductCard = ({product, editProduct, deleteProduct}: ProductCardProps) =>
                   onClick={() => editProduct(product)}
               >
                   <IconEdit/>
+              </Button>
+              <Button
+                  color="red" mt="md" radius="sm"
+                  variant={"outline"}
+                  style={{flex: 1}}
+                  onClick={() => deleteProduct(product.id)}
+              >
+                  <IconTrash/>
               </Button>
           </Group>
       }

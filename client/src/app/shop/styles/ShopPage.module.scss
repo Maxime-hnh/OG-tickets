@@ -2,7 +2,8 @@
   height: calc(100dvh - 59px);
   border-bottom: 1px solid #dee2e6
 }
-.navbar {
+
+.summaryBar {
   min-width: 300px;
   width: 300px;
   height: 100%;
@@ -11,5 +12,21 @@
   display: flex;
   flex-direction: column;
   align-content: center;
+
+  @media screen and (max-width: 767px) {
+    background: #ffffff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    border-right: none;
+    transition: transform 0.2s ease-in-out;
+    transform: translateX(-100%);
+  }
+}
+
+.summaryBar.visible {
+  transform: translateX(0%);
 }
 
