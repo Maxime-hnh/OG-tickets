@@ -3,6 +3,7 @@
 This project was developed as part of an academic exercise. The site is a platform where users can book tickets to participate in the sporting events of the Olympic Games. 
 
 The backend is built with Java, Spring Boot, and Hibernate, while the frontend uses Next.js
+
 ![java-vertical](https://github.com/user-attachments/assets/302f844a-0efc-4c5d-8e9b-027333f13e9d)
 ![springio-icon](https://github.com/user-attachments/assets/07666f1c-6deb-4d5d-93eb-4836693a6bbf)
 ![hibernate-icon](https://github.com/user-attachments/assets/1055e9dc-2bc3-4817-b88f-678bfdca1be2)
