@@ -3,7 +3,6 @@ package com.studi.OG_tickets.controllers;
 import com.studi.OG_tickets.dto.*;
 import com.studi.OG_tickets.exceptions.BadRequestException;
 import com.studi.OG_tickets.services.AuthService;
-import com.studi.OG_tickets.services.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 
@@ -34,7 +33,6 @@ public class AuthController {
     } catch (BadRequestException e) {
       throw new BadRequestException(e.getMessage());
     }
-
   }
 
   @PostMapping("/signup")
