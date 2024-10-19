@@ -35,6 +35,7 @@ To start locally OG-tickets, follow these steps:
    * PG_DB
    * PG_USER
    * PG_PASSWORD
+
 You will also need to configure your SMTP settings if they are not set up yet. For example, if you're using SendGrid, include the following parameters in your .env file:
   * SMTP_HOST
   * SMTP_PORT
