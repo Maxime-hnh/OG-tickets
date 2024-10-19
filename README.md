@@ -9,6 +9,9 @@ The backend is built with Java, Spring Boot, and Hibernate, while the frontend u
 ![hibernate-icon](https://github.com/user-attachments/assets/1055e9dc-2bc3-4817-b88f-678bfdca1be2)
 ![nextjs-icon](https://github.com/user-attachments/assets/8fe7cc24-9f6f-4e0c-a58b-489feeb416f0)
 
+## **Url**
+https://og-tickets.netlify.app/
+
 ## **Installation**
 
 1. Check java version : **`java --version`** (Java 11 or higher is recommended, we currently use Java 17)
