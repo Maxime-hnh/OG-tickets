@@ -19,6 +19,8 @@ import {orderService} from "@/_services/order.service";
 import {FetchedProduct} from "@/_objects/Product";
 import ExpirationDateInput from "@/_components/ExpirationDateInput";
 import * as Yup from "yup";
+import {notifications} from "@mantine/notifications";
+import {IconForbid} from "@tabler/icons-react";
 
 interface PaymentRequestValues {
   fullname: string;
@@ -75,6 +77,13 @@ const PaymentForm = ({
       }
     } catch (e) {
       console.error(e)
+      notifications.show({
+        icon: <IconForbid/>,
+        color: "red",
+        position: "bottom-center",
+        title: "Erreur de connexion",
+        message: `Une erreur est survenue ${e}`
+      })
     } finally {
       setIsLoading(false);
     }

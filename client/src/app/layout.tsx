@@ -50,6 +50,7 @@ const Layout = ({children}: Readonly<{ children: React.ReactNode; }>) => {
     <html lang="fr">
     <head>
       <title>OG-Tickets</title>
+      <link rel="icon" href="/logo.png"/>
       <ColorSchemeScript/>
     </head>
     <body className={inter.className}>

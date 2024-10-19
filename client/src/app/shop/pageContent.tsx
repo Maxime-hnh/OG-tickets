@@ -1,28 +1,38 @@
 "use client"
-import {ActionIcon, Box, Button, Divider, Group, rem, ScrollArea, Stack, Text, Title, Transition} from "@mantine/core";
-import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from "react";
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Divider,
+  Group,
+  Modal,
+  rem,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+  Transition
+} from "@mantine/core";
+import React, {useContext, useEffect, useState} from "react";
 import {FetchedProduct} from "@/_objects/Product";
 import {productService} from "@/_services/product.service";
 import ShopCard from "@/app/shop/components/ShopCard";
 import {
   IconBuildingStore,
-  IconCheck, IconChevronLeft,
+  IconChevronLeft,
   IconChevronRight,
-  IconForbid,
   IconShoppingCart,
   IconShoppingCartCopy, IconShoppingCartFilled,
   IconX
 } from "@tabler/icons-react";
 import CustomLoading from "@/_components/CustomLoading";
 import styles from './styles/ShopPage.module.scss';
-import {AuthenticatedUser, AuthenticationRequest, authenticationService} from "@/_services/authentication.service";
+import {AuthenticatedUser, authenticationService} from "@/_services/authentication.service";
 import Order, {FetchedOrder, SelectedProducts} from "@/_objects/Order";
 import {orderService} from "@/_services/order.service";
-import LoginForm from "@/_components/LoginForm";
-import {notifications} from "@mantine/notifications";
 import PaymentForm from "@/_components/PaymentForm";
-import {FetchedUser} from "@/_objects/User";
 import AppContext from "@/app/Context/AppContext";
+import LoginForm from "@/_components/LoginForm";
 
 const ShopPageContent = () => {
 
@@ -37,9 +47,6 @@ const ShopPageContent = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [showSummary, setShowSummary] = useState(false);
   const [shopStep, setShopStep] = useState<number>(0);
-
-  const [loginStep, setLoginStep] = useState<number>(0);
-  const [userInfo, setUserInfo] = useState<Partial<FetchedUser> | null>(null);
 
   const getProducts = async () => {
     setIsLoading(true);
@@ -106,49 +113,6 @@ const ShopPageContent = () => {
     if (newOrderDraft) {
       setOrder(newOrderDraft);
       setShopStep(1);
-    }
-  }
-
-  const handleSubmitLoginForm = async (values: AuthenticationRequest, setLoader: Dispatch<SetStateAction<boolean>>) => {
-    try {
-      if (loginStep === 0) {
-        setLoader(true);
-        const userShortData = await authenticationService.login(loginStep, values)
-        if (userShortData) {
-          setUserInfo(userShortData)
-          setLoginStep(1)
-          setLoader(false)
-        }
-      }
-      if (loginStep === 1) {
-        setLoader(true)
-        let data = {
-          userId: userInfo!.id,
-          twoFactorCode: values.twoFactorCode
-        }
-        const loggedUser = await authenticationService.login(loginStep, data)
-        if (loggedUser) {
-          setLoader(false)
-          setAuthenticatedUser(loggedUser)
-          setOpenLogin(false);
-          notifications.show({
-            icon: <IconCheck/>,
-            color: "green",
-            position: "top-right",
-            title: "Connexion réussie !",
-            message: `Bonjour ${loggedUser.firstName} ${loggedUser.lastName}, vous pouvez à présent procéder au paiement`
-          })
-        }
-      }
-    } catch (e) {
-      setLoader(false)
-      notifications.show({
-        icon: <IconForbid/>,
-        color: "red",
-        position: "bottom-center",
-        title: "Erreur de connexion",
-        message: `Une erreur est survenue ${e}`
-      })
     }
   }
 
@@ -292,13 +256,21 @@ const ShopPageContent = () => {
           </ScrollArea>
         </Box>
       </Group>
-      <LoginForm
+      <Modal
+        centered
         opened={openLogin}
         onClose={() => setOpenLogin(false)}
-        onSubmit={handleSubmitLoginForm}
-        warningMessage={"Vous devez être authentifié avant d'aller plus loin"}
-        loginStep={loginStep}
-      />
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+        radius={"sm"}
+      >
+        <LoginForm
+          closeModal={() => setOpenLogin(false)}
+          setAuthenticatedUser={setAuthenticatedUser}
+        />
+      </Modal>
     </>
   )
 }

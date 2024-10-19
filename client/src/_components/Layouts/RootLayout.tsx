@@ -38,12 +38,14 @@ const RootLayout = ({children, opened, toggle}: RootLayoutProps) => {
     >
       <AppShellHeader withBorder={isMobile} bg={"#222"}>
         <Group justify="space-between" style={{flex: 1}} h={"100%"} px={"md"}>
-          <Image
-            radius={'xs'}
-            w={"48px"}
-            src="/logo_OG.svg"
-            alt="logo"
-          />
+          <Link href={"/"}>
+            <Image
+              radius={'xs'}
+              w={"48px"}
+              src="/logo_OG.svg"
+              alt="logo"
+            />
+          </Link>
           <Group gap={width < 991 ? 3 : "lg"} visibleFrom="sm" h={"100%"}>
             <Link href={"/"} className={"link"}>Accueil</Link>
             <Link href={"/shop"} className={"link"}>Offres</Link>
@@ -59,10 +61,10 @@ const RootLayout = ({children, opened, toggle}: RootLayoutProps) => {
       </AppShellHeader>
 
       <AppShellNavbar py="md" px={4} bg={"#222"}>
-        <Link href={"/"} className={"link"}>Accueil</Link>
-        <Link href={"/shop"} className={"link"}>Offres</Link>
-        <Text className={"link"}>Résultats</Text>
-        <Text className={"link"}>Contact</Text>
+        <Link href={"/"} className={"link"} onClick={toggle}>Accueil</Link>
+        <Link href={"/shop"} className={"link"} onClick={toggle}>Offres</Link>
+        <Text className={"link"} onClick={toggle}>Résultats</Text>
+        <Text className={"link"} onClick={toggle}>Contact</Text>
         <Divider my="sm"/>
         <Group align={"center"} justify={"space-between"}>
           <SignupButton grow={true}/>
