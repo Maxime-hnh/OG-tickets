@@ -48,7 +48,8 @@ For security, you will also need to add JWT_SECRET_KEY (used in src/main/java/pr
 ### Front-end setup
 
 1. Navigate to the client directory : **`cd client`**
-2. Start the client : **`npm run dev`** ou **`pnpm dev`**
+2. Navigate to **`next.config.mjs`** and ensure that the server path is configured as: : **`http://localhost:your_port/api/:path*`**
+3. Start the client : **`npm run dev`** ou **`pnpm dev`**
 
 ## **Test**
 
