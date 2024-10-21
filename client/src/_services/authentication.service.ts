@@ -6,7 +6,6 @@ import {authHeader} from "@/_helpers/auth-header";
 export enum AuthRole {
   USER = 'USER',
   ADMIN = 'ADMIN',
-  CLIENT = 'CLIENT',
 }
 
 export class AuthenticationRequest {
@@ -26,7 +25,7 @@ export interface AuthenticatedUser {
 }
 
 class AuthenticationService {
-  private readonly loggedUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('loggedUser') ?? 'null'));
+  readonly loggedUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('loggedUser') ?? 'null'));
 
   loggedUser: Observable<AuthenticatedUser | null> = this.loggedUserSubject.asObservable();
 

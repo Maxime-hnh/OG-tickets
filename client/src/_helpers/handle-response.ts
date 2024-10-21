@@ -1,6 +1,6 @@
-import toast from "react-hot-toast";
 import {authenticationService} from "@/_services/authentication.service";
 import {retryOriginalRequest} from "@/_helpers/helper";
+import {notifications} from "@mantine/notifications";
 
 export class ApiError extends Error {
   errorCode: number;
@@ -42,17 +42,21 @@ export async function handleResponse<TData = any>(response: Response): Promise<a
     }
     if (response.status === 403) {
       console.log("error 403 " + response.statusText, response);
-      toast.error("You do not have permission to access this resource.", {
-        duration: 3000,
-        position: "bottom-center"
-      });
+      notifications.show({
+        color: "red",
+        position: "bottom-center",
+        title: "Erreur de connexion",
+        message: "You do not have permission to access this resource."
+      })
     }
     if ([500].indexOf(response.status) !== -1) {
       console.log("error 500 " + response.statusText, response);
-      toast.error((data && data.message) || response.statusText, {
-        duration: 3000,
-        position: "bottom-center"
-      });
+      notifications.show({
+        color: "red",
+        position: "bottom-center",
+        title: "Erreur de connexion",
+        message: `${(data && data.message) || response.statusText}`
+      })
     }
     const errorCode = response.status;
     const errorMessage = (data && data.message) || response.statusText;

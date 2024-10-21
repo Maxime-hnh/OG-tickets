@@ -31,14 +31,6 @@ class ProductService {
     return await handleResponse(await fetch(`/api/product/${productId}`, requestOptions));
   };
 
-  async getById(productId: number): Promise<FetchedProduct | void> {
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      headers: { ...authHeader() }
-    };
-    return await handleResponse(await fetch(`/api/product/${productId}`, requestOptions));
-  };
-
   async getProducts():Promise<FetchedProduct[] | void> {
     const requestOptions:RequestInit  = {
       method: "GET",
