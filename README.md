@@ -46,6 +46,7 @@ You will also need to configure your SMTP settings if they are not set up yet. F
   * SMTP_PASSWORD
 
 For security, you will also need to add JWT_SECRET_KEY (used in src/main/java/project/security/SecurityConstants). Ensure that the key is base64-encoded.
+
 4. Start the server : **./mvnw spring-boot:run`**
 
 ### Front-end setup
