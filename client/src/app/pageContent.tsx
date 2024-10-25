@@ -155,7 +155,7 @@ const HomePageContent = () => {
             zIndex={0}
           />
           <Container className={styles.hero_container} size="md">
-            <Title className={styles.hero_title}>Bienvenue aux Jeux Olympique de Paris 2024</Title>
+            <Title className={styles.hero_title}>Bienvenue aux Jeux Olympiques de Paris 2024</Title>
             <Text ta={"justify"} className={styles.hero_description} size="xl" mt="xl">
               Ne manquez pas cette opportunité unique de vivre les Jeux Olympiques dans la ville lumière, où
               l&apos;histoire et

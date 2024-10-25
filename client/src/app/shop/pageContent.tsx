@@ -175,7 +175,10 @@ const ShopPageContent = () => {
                 radius={"xl"}
                 rightSection={<IconChevronRight/>}
                 leftSection={!selectedProducts ? <IconShoppingCart/> : <IconShoppingCartCopy/>}
-                onClick={() => goToPayment(selectedProducts as SelectedProducts[], totalPrice, authenticatedUser?.id)}
+                onClick={() => {
+                  goToPayment(selectedProducts as SelectedProducts[], totalPrice, authenticatedUser?.id)
+                  if (isMobile) setShowSummary(false)
+                }}
               >
                 Procéder au paiement
               </Button>
