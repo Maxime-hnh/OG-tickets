@@ -78,6 +78,7 @@ const ProductsPageContent = () => {
         title: "Suppression",
         message: "Le produit a été supprimé"
       })
+      await getProducts()
     } catch (e) {
       notifications.show({
         icon: <IconCheck/>,
@@ -89,7 +90,7 @@ const ProductsPageContent = () => {
     }
   }
 
-  if (isLoading) return null;
+  // if (isLoading) return <CustomLoading/>;
   return (
     <>
       <Container mx={0} miw={"100%"}>
