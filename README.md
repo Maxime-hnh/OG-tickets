@@ -46,12 +46,13 @@ You will also need to configure your SMTP settings if they are not set up yet. F
   * SMTP_PASSWORD
 
 For security, you will also need to add JWT_SECRET_KEY (used in src/main/java/project/security/SecurityConstants). Ensure that the key is base64-encoded.
-4. Start the server : **./mvnw spring-boot:run`**
+
+4. Start the server : **`./mvnw spring-boot:run`**
 
 ### Front-end setup
 
 1. Navigate to the client directory : **`cd client`**
-2. Navigate to **`next.config.mjs`** and ensure that the server path is configured as: : **`http://localhost:your_port/api/:path*`**
+2. Navigate to **`next.config.mjs`** and ensure that the server path is configured as: : **`http://localhost:YOUR_PORT/api/:path*`**
 3. Start the client : **`npm run dev`** ou **`pnpm dev`**
 
 ## **Test**
