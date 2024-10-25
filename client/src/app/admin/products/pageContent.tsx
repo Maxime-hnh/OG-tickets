@@ -8,6 +8,7 @@ import CustomDrawer from "@/_components/CustomDrawer";
 import {notifications} from "@mantine/notifications";
 import {IconCheck, IconPencilPlus} from "@tabler/icons-react";
 import ProductForm from "@/app/admin/products/components/ProductForm";
+import CustomLoading from "@/_components/CustomLoading";
 
 const ProductsPageContent = () => {
 
@@ -90,7 +91,7 @@ const ProductsPageContent = () => {
     }
   }
 
-  // if (isLoading) return <CustomLoading/>;
+  if (isLoading) return <CustomLoading/>;
   return (
     <>
       <Container mx={0} miw={"100%"}>
