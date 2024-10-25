@@ -269,6 +269,7 @@ const ShopPageContent = () => {
         <LoginForm
           closeModal={() => setOpenLogin(false)}
           setAuthenticatedUser={setAuthenticatedUser}
+          warningMessage={true}
         />
       </Modal>
     </>

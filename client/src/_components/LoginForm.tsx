@@ -15,10 +15,11 @@ import SignupForm from "@/_components/SignupForm";
 interface LoginFormProps {
   closeModal: () => void;
   redirectUser?: (user: AuthenticatedUser) => void;
-  setAuthenticatedUser?: Dispatch<SetStateAction<AuthenticatedUser | null>>
+  setAuthenticatedUser?: Dispatch<SetStateAction<AuthenticatedUser | null>>;
+  warningMessage?: boolean;
 }
 
-const LoginForm = ({closeModal, redirectUser, setAuthenticatedUser}: LoginFormProps) => {
+const LoginForm = ({closeModal, redirectUser, setAuthenticatedUser, warningMessage}: LoginFormProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loginStep, setLoginStep] = useState<number>(0);
@@ -99,6 +100,7 @@ const LoginForm = ({closeModal, redirectUser, setAuthenticatedUser}: LoginFormPr
         {({values, handleChange, handleSubmit, errors, touched}) => (
           <Form onSubmit={handleSubmit}>
             <Title ta="center" className={"titleFont"} mb={30}>Connexion</Title>
+            {warningMessage && <Text c={"dimmed"} ta={"center"}>Vous devez être authentifié pour réserver un ticket</Text> }
             {isLoading && <Group py={20} justify={"center"}><Loader type="bars"/></Group>}
             {!isLoading
               && loginStep === 0

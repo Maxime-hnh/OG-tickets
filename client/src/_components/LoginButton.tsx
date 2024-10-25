@@ -87,6 +87,7 @@ const LoginButton = ({grow = false}: LoginButtonProps) => {
         <LoginForm
           closeModal={close}
           redirectUser={redirectUser}
+          warningMessage={false}
         />
       </Modal>
     </>
